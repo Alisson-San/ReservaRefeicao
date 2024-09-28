@@ -10,6 +10,5 @@ namespace ReservaRefeicao.Model
     {
         public int Repreg { get; set; }
         public string Nome { get; set; }
-
     }
 }
