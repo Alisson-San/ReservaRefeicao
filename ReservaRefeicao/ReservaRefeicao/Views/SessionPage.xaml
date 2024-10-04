@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:m="clr-namespace:ReservaRefeicao.Model"
+             x:Class="ReservaRefeicao.Views.SessionPage"
+             Title="SessionPage">
+
+    <ScrollView>
+        <StackLayout Margin="20,35,20,25">
+            
+            <Label 
+                Text="Reservas disponíveis para dia 04/10/2024"
+                VerticalOptions="Center"
+                HorizontalOptions="Center"/>
+
+            <Grid 
+                IsVisible="{OnIdiom Phone=False, Default=True}">
+
+                <Grid.Resources>
+                    <DataTemplate x:Key="MetricTemplate">
+                        <Border
+                            HeightRequest="154"
+                            WidthRequest="150"
+                            x:DataType="m:Refeicao"
+                            Stroke="Transparent">   
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="40" />
+                            </Border.StrokeShape>
+                            <Grid
+                                Margin="15"
+                                ColumnDefinitions="*"
+                                RowDefinitions="*">
+                                
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer NumberOfTapsRequired="2"
+                                    Tapped="OnTapped"/>
+                                </Grid.GestureRecognizers>
+                                
+                                <!--<Image Source="{Binding Icon}"
+                                            WidthRequest="45"
+                                            HeightRequest="45"
+                                            Aspect="AspectFit"
+                                            VerticalOptions="Start"
+                                            HorizontalOptions="End"
+                                />-->
+
+                                <StackLayout 
+                                    HorizontalOptions="Start"
+                                    Spacing="0"
+                                    VerticalOptions="End">  
+                                    <Label Text="{Binding Tipo}" class="LargeTitle"/>
+                                    <Label Text="{Binding Descricao}" class="SubContent"/>
+
+                                    <Button
+                                        x:Name="ReservarBtn"
+                                        Text="Reservar" 
+                                        Clicked="OnButtonClick"
+                                        HorizontalOptions="Fill" />
+                                </StackLayout>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+
+                </Grid.Resources>
+
+                <CollectionView
+                    Grid.Column="1"
+                    Margin="15" ItemSizingStrategy="MeasureFirstItem"
+                    ItemTemplate="{StaticResource MetricTemplate}">
+
+                    <CollectionView.ItemsLayout>
+                        <GridItemsLayout Orientation="Vertical"
+                             HorizontalItemSpacing="8"
+                             VerticalItemSpacing="8"
+                             Span="3"/>
+                    </CollectionView.ItemsLayout>
+
+                    <CollectionView.ItemsSource>
+                        <x:Array Type="{x:Type m:Refeicao}">
+                            <m:Refeicao CodRefeicao="1" Tipo="Refeição A" Descricao="Descrição A" Data="04/10/2024"/>
+                            <m:Refeicao CodRefeicao="2" Tipo="Refeição B" Descricao="Descrição B" Data="04/10/2024"/>
+                            <m:Refeicao CodRefeicao="3" Tipo="Refeição C" Descricao="Descrição C" Data="04/10/2024"/>
+                        </x:Array>
+                    </CollectionView.ItemsSource>
+
+                </CollectionView>
+
+                <BoxView
+                    WidthRequest="1"
+                    HorizontalOptions="Start"/>
+            </Grid>
+            
+        </StackLayout>
+    </ScrollView>
+    
+</ContentPage>

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ReservaRefeicao.Context
 {
-    public class DbContext:DbContext
+    public class DbContext 
     {
 
     }
