@@ -1,6 +1,7 @@
 ﻿using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using ReservaRefeicao.Config;
+using ReservaRefeicao.Model;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -31,20 +32,6 @@ namespace ReservaRefeicao.Context
             }
         }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            string stringConexao = "SistemaTramontina";
-#if (DEBUG)
-            stringConexao += "-DEBUG";
-#endif
-
-            string connectionString = Configuracao.ObterInstancia().ObterConnectionString(stringConexao).ConnectionString;
-
-            optionsBuilder.UseSqlServer(connectionString);
-
-            base.OnConfiguring(optionsBuilder);
-        }
-
         byte[] SetAppRole(string approle, string password)
         {
             var cmd = Database.GetDbConnection().CreateCommand();
@@ -64,5 +51,46 @@ namespace ReservaRefeicao.Context
 
             return (byte[])pCookieId.Value;
         }
+
+        void UnSetAppRole(byte[] cookie)
+        {
+            if (Database.GetDbConnection().State == ConnectionState.Open)
+            {
+                var pCookieId = new SqlParameter("@cookie", SqlDbType.VarBinary)
+                {
+                    Size = 8000,
+                    Value = cookie
+                };
+
+                using (IDbCommand cmd = Database.GetDbConnection().CreateCommand())
+                {
+                    cmd.CommandText = "sp_unsetapprole";
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.Add(pCookieId);
+
+                    cmd.ExecuteNonQuery();
+                    cookie = null;
+                }
+            }
+        }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            string stringConexao = "SistemaTramontina";
+#if (DEBUG)
+            stringConexao += "-DEBUG";
+#endif
+
+            string connectionString = Configuracao.ObterInstancia().ObterConnectionString(stringConexao).ConnectionString;
+
+            optionsBuilder.UseSqlServer(connectionString);
+
+            base.OnConfiguring(optionsBuilder);
+        }
+
+        public DbSet<Funcionario> Funcionarios { get; set; }
+        public DbSet<Secao> secaos { get; set; }
+        public DbSet<Predio> predios { get; set; }
+        public DbSet<Refeicao> refeicaos { get; set; }
     }
 }
