@@ -11,9 +11,8 @@ namespace ReservaRefeicao.Model
     {
 
         public string CodReserva { get; set; }
-        public Funcionario Repreg { get; set; } 
-        public Refeicao CodRefeicao { get; set; } 
+        public Funcionario Repreg { get; set; }
+        public Refeicao CodRefeicao { get; set; }
         public DateTime DataReserva { get; set; }
-
- }
+    }
 }

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="ReservaRefeicao.Views.LoginPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controllers="clr-namespace:ReservaRefeicao.Controllers"
+    xmlns:templates="clr-namespace:ReservaRefeicao.Views.Templates"
+    Title="LoginPage"
+    x:DataType="controllers:TestController">
+
+    <StackLayout Margin="20,35,20,25">
+
+        <Label
+            HorizontalOptions="Center"
+            Text="Reservas disponíveis para dia 04/10/2024"
+            VerticalOptions="Center" />
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="60" />
+            </Grid.RowDefinitions>
+
+            <CollectionView
+                Grid.Row="0"
+                Margin="15"
+                ItemSizingStrategy="MeasureFirstItem"
+                ItemsSource="{Binding TestList}">
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <templates:RefeicaoTemplate />
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+
+                <CollectionView.ItemsLayout>
+                    <GridItemsLayout
+                        HorizontalItemSpacing="8"
+                        Orientation="Vertical"
+                        Span="3"
+                        VerticalItemSpacing="8" />
+                </CollectionView.ItemsLayout>
+            </CollectionView>
+
+            <Button
+                Grid.Row="1"
+                Clicked="OnButtonClick"
+                HorizontalOptions="Center"
+                Text="Aproxime crachá para iniciar sessão"
+                VerticalOptions="Center" />
+
+        </Grid>
+    </StackLayout>
+
+</ContentPage>
