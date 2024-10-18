@@ -57,6 +57,15 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <AndroidResource Remove="Logs\**" />
+	  <Compile Remove="Logs\**" />
+	  <EmbeddedResource Remove="Logs\**" />
+	  <MauiCss Remove="Logs\**" />
+	  <MauiXaml Remove="Logs\**" />
+	  <None Remove="Logs\**" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.2" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.8" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.8" />
@@ -68,14 +77,13 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Logs\" />
+	  <Compile Update="Views\AuthenticationView.xaml.cs">
+	    <DependentUpon>AuthenticationView.xaml</DependentUpon>
+	  </Compile>
 	</ItemGroup>
 
 	<ItemGroup>
-	  <MauiXaml Update="Views\LoginPage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Views\SessionPage.xaml">
+	  <MauiXaml Update="Views\AuthenticationView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\Templates\RefeicaoTemplate.xaml">

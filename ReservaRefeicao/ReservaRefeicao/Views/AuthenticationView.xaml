@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ReservaRefeicao.Views.AuthenticationView"
+             Title="Autenticação">
+
+    <StackLayout Padding="20">
+        <Label Text="Digite seu código de funcionário" />
+        <Entry Placeholder="Código de Funcionário" 
+                    Text="{Binding CodigoFuncionario}" 
+                     ReturnType="Done"
+                    Completed="OnCompleted"/>
+        <Button Text="Autenticar" Command="{Binding AutenticarCommand}" />
+    </StackLayout>
+
+</ContentPage>

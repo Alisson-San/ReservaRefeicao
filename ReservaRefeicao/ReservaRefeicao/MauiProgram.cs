@@ -1,4 +1,7 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using ReservaRefeicao.Utils;
+using ReservaRefeicao.Services;
 
 namespace ReservaRefeicao
 {
@@ -15,9 +18,16 @@ namespace ReservaRefeicao
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
 
-#if DEBUG
-    		builder.Logging.AddDebug();
-#endif
+
+            // Configurar o DbContext para SQL Server
+            builder.Services.AddDbContext<DbContextServices>(options =>
+            {
+                options.UseSqlServer(Configuracao.ObterInstancia().ObterConnectionString("SistemaTramontina").ConnectionString);
+            });
+
+//#if DEBUG
+//            builder.Logging.AddDebug();
+//#endif
 
             return builder.Build();
         }

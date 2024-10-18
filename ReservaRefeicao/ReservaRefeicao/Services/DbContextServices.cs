@@ -1,7 +1,7 @@
 ﻿using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using ReservaRefeicao.Config;
 using ReservaRefeicao.Model;
+using ReservaRefeicao.Utils;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -9,13 +9,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ReservaRefeicao.Context
+namespace ReservaRefeicao.Services
 {
-    public class DbContextReserva:DbContext
+    public class DbContextServices : DbContext
     {
         private byte[] cookie;
 
-        public DbContextReserva()
+        public DbContextServices(DbContextOptions<DbContextServices> options): base (options)
         {
             Database.GetDbConnection().Open();
             cookie = SetAppRole("DesenvolvimentoAppRole", "Botcha123");
@@ -36,14 +36,14 @@ namespace ReservaRefeicao.Context
         {
             var cmd = Database.GetDbConnection().CreateCommand();
             cmd.CommandText = "sp_setapprole";
-            cmd.CommandType = System.Data.CommandType.StoredProcedure;
+            cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.Add(new SqlParameter("@rolename", approle));
             cmd.Parameters.Add(new SqlParameter("@password", password));
             cmd.Parameters.Add(new SqlParameter("@fCreateCookie", 1));
 
-            var pCookieId = new SqlParameter("@cookie", System.Data.SqlDbType.VarBinary);
+            var pCookieId = new SqlParameter("@cookie", SqlDbType.VarBinary);
             pCookieId.Size = 8000;
-            pCookieId.Direction = System.Data.ParameterDirection.Output;
+            pCookieId.Direction = ParameterDirection.Output;
             cmd.Parameters.Add(pCookieId);
 
             cmd.ExecuteNonQuery();

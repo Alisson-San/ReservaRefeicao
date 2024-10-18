@@ -8,7 +8,7 @@ namespace ReservaRefeicao
         {
             InitializeComponent();
 
-            Routing.RegisterRoute("Session", typeof(SessionPage));
+            Routing.RegisterRoute("AuthenticationView", typeof(AuthenticationView));
         }
     }
 }

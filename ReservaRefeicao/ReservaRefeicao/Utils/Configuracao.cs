@@ -1,10 +1,10 @@
 ﻿using System.Configuration;
 
-namespace ReservaRefeicao.Config
+namespace ReservaRefeicao.Utils
 {
     public class Configuracao
     {
-            private static Configuracao _instancia = null;
+        private static Configuracao _instancia = null;
 
         public string ObterConfiguracao(string nomeConfiguracao)
         {
@@ -26,6 +26,6 @@ namespace ReservaRefeicao.Config
                 _instancia = new Configuracao();
             return _instancia;
         }
-         
+
     }
 }

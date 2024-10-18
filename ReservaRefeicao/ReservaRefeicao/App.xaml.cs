@@ -1,4 +1,7 @@
-﻿namespace ReservaRefeicao
+﻿using ReservaRefeicao.Model;
+using ReservaRefeicao.Views;
+
+namespace ReservaRefeicao
 {
     public partial class App : Application
     {
@@ -6,7 +9,8 @@
         {
             InitializeComponent();
 
-            MainPage = new AppShell();
+            var _sessaoUsuario = new Sessao();
+            MainPage = new NavigationPage(new AuthenticationView(_sessaoUsuario));
         }
     }
 }
