@@ -1,16 +1,17 @@
-﻿using ReservaRefeicao.Model;
+﻿using Microsoft.Extensions.DependencyInjection;
+using ReservaRefeicao.Model;
+using ReservaRefeicao.ModelView;
 using ReservaRefeicao.Views;
 
 namespace ReservaRefeicao
 {
     public partial class App : Application
     {
-        public App()
+        public App(IServiceProvider serviceProvider)
         {
             InitializeComponent();
 
-            var _sessaoUsuario = new Sessao();
-            MainPage = new NavigationPage(new AuthenticationView(_sessaoUsuario));
+            MainPage = serviceProvider.GetRequiredService<AuthenticationView>();
         }
     }
 }

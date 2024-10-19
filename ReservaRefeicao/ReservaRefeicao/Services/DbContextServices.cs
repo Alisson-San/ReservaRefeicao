@@ -18,7 +18,7 @@ namespace ReservaRefeicao.Services
         public DbContextServices(DbContextOptions<DbContextServices> options): base (options)
         {
             Database.GetDbConnection().Open();
-            cookie = SetAppRole("DesenvolvimentoAppRole", "Botcha123");
+            cookie = SetAppRole("RefeicaoAppRole", "Botcha123");
         }
         public bool Checkconnection()
         {

@@ -80,10 +80,16 @@
 	  <Compile Update="Views\AuthenticationView.xaml.cs">
 	    <DependentUpon>AuthenticationView.xaml</DependentUpon>
 	  </Compile>
+	  <Compile Update="Views\CardapioView.xaml.cs">
+	    <DependentUpon>CardapioView.xaml</DependentUpon>
+	  </Compile>
 	</ItemGroup>
 
 	<ItemGroup>
 	  <MauiXaml Update="Views\AuthenticationView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\CardapioView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\Templates\RefeicaoTemplate.xaml">

@@ -6,10 +6,13 @@
 
     <StackLayout Padding="20">
         <Label Text="Digite seu código de funcionário" />
+
+        <!-- Captura o evento de pressionar Enter -->
         <Entry Placeholder="Código de Funcionário" 
-                    Text="{Binding CodigoFuncionario}" 
-                     ReturnType="Done"
-                    Completed="OnCompleted"/>
+               Text="{Binding CodigoFuncionario}" 
+               ReturnType="Done"
+               Completed="OnCompleted" />
+
         <Button Text="Autenticar" Command="{Binding AutenticarCommand}" />
     </StackLayout>
 

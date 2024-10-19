@@ -9,6 +9,7 @@ namespace ReservaRefeicao
             InitializeComponent();
 
             Routing.RegisterRoute("AuthenticationView", typeof(AuthenticationView));
+            Routing.RegisterRoute(nameof(CardapioView), typeof(CardapioView));
         }
     }
 }

@@ -39,34 +39,19 @@ namespace ReservaRefeicao.ModelView
             AutenticarCommand = new Command(async () => await Autenticar());
         }
 
-        private async Task Autenticar()
+        public async Task Autenticar()
         {
-            if (IsBusy)
-                return;
+            // Lógica de autenticação, usando _gestorDeReserva
+            var funcionario = await _gestorDeSessao.ObterFuncionarioPorCodigo(CodigoFuncionario);
 
-            IsBusy = true;
-            try
+            if (funcionario != null)
             {
-                // Realizar autenticação
-                var funcionario = await _gestorDeSessao.ObterFuncionarioPorCodigo(CodigoFuncionario);
-
-                if (funcionario != null)
-                {
-                    _sessaoUsuario.IniciarSessao(funcionario);
-                    await Shell.Current.GoToAsync("//MainPage");
-                }
-                else
-                {
-                    ErrorMessage = "Código de funcionário inválido";
-                }
+                _sessaoUsuario.IniciarSessao(funcionario);
+                await Shell.Current.GoToAsync($"//CardapioView?nomeFuncionario={funcionario.Nome}");
             }
-            catch (Exception ex)
+            else
             {
-                ErrorMessage = $"Erro ao autenticar: {ex.Message}";
-            }
-            finally
-            {
-                IsBusy = false;
+                // Exibir erro
             }
         }
     }
