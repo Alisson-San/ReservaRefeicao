@@ -11,7 +11,7 @@ namespace ReservaRefeicao
         {
             InitializeComponent();
 
-            MainPage = serviceProvider.GetRequiredService<AuthenticationView>();
+            MainPage = new AppShell();
         }
     }
 }

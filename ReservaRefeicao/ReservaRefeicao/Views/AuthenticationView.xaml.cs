@@ -16,7 +16,12 @@ public partial class AuthenticationView : ContentPage
         BindingContext = _viewModel;
     }
 
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
 
+        _viewModel.Limpar(); // Limpa a sessão do usuário
+    }
 
     // Evento acionado quando o usuário pressiona Enter
     private async void OnCompleted(object sender, EventArgs e)

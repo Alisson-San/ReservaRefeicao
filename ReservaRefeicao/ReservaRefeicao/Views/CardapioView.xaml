@@ -7,7 +7,6 @@
     <StackLayout Padding="20">
         <Label Text="Bem-vindo(a)," />
         <Label Text="{Binding NomeFuncionario}" FontSize="Large" FontAttributes="Bold"/>
-
         <!-- Aqui virá a lógica de escolha de cardápio -->
         <Button Text="Escolher Cardápio" />
     </StackLayout>

@@ -5,6 +5,7 @@ using ReservaRefeicao.Services;
 using ReservaRefeicao.Model;
 using ReservaRefeicao.ModelView;
 using ReservaRefeicao.Views;
+using ReservaRefeicao.ViewModels;
 
 namespace ReservaRefeicao
 {
@@ -35,8 +36,9 @@ namespace ReservaRefeicao
 
             // Registra o AuthenticationViewModel
             builder.Services.AddTransient<AuthenticationViewModel>();
-
             builder.Services.AddTransient<AuthenticationView>();
+            builder.Services.AddTransient<CardapioViewModel>();
+            builder.Services.AddTransient<CardapioView>();
 
             //#if DEBUG
             //            builder.Logging.AddDebug();

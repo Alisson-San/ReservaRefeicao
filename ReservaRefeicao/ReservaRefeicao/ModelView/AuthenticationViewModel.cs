@@ -1,5 +1,6 @@
 ﻿using ReservaRefeicao.Model;
 using ReservaRefeicao.Services;
+using ReservaRefeicao.Views;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,8 +12,8 @@ namespace ReservaRefeicao.ModelView
 {
     public class AuthenticationViewModel : ViewModelBase
     {
-        private int _codigoFuncionario;
-        public int CodigoFuncionario
+        private int? _codigoFuncionario;
+        public int? CodigoFuncionario
         {
             get => _codigoFuncionario;
             set => SetProperty(ref _codigoFuncionario, value);
@@ -35,6 +36,7 @@ namespace ReservaRefeicao.ModelView
         {
             _gestorDeSessao = gestorDeReserva;
             _sessaoUsuario = sessaoUsuario;
+            _codigoFuncionario = null;
 
             AutenticarCommand = new Command(async () => await Autenticar());
         }
@@ -42,17 +44,34 @@ namespace ReservaRefeicao.ModelView
         public async Task Autenticar()
         {
             // Lógica de autenticação, usando _gestorDeReserva
-            var funcionario = await _gestorDeSessao.ObterFuncionarioPorCodigo(CodigoFuncionario);
+            if (CodigoFuncionario != null)
+            {
+                int Repreg = (int)CodigoFuncionario;
+                var funcionario = await _gestorDeSessao.ObterFuncionarioPorCodigo(Repreg);
 
-            if (funcionario != null)
-            {
-                _sessaoUsuario.IniciarSessao(funcionario);
-                await Shell.Current.GoToAsync($"//CardapioView?nomeFuncionario={funcionario.Nome}");
+                if (funcionario != null)
+                {
+                    _sessaoUsuario.IniciarSessao(funcionario);
+                    if (Shell.Current != null)
+                    {
+                        try
+                        {
+                            await Shell.Current.GoToAsync($"{nameof(CardapioView)}?nomeFuncionario={Uri.EscapeDataString(funcionario.Nome)}");
+                        }
+                        catch (Exception ex) { Console.WriteLine(ex.Message); }
+                    }
+                }
+                else
+                {
+                    // Exibir erro
+                }
             }
-            else
-            {
-                // Exibir erro
-            }
+        }
+
+        public void Limpar()
+        {
+            CodigoFuncionario = null;
+            _sessaoUsuario.EncerrarSessao();
         }
     }
 }
