@@ -19,6 +19,10 @@ namespace ReservaRefeicao.Model
 
         [Required]
         [MaxLength(50)]
+        public required string Nome{ get; set; }
+
+        [Required]
+        [MaxLength(50)]
         public required string Tipo { get; set; }
 
         public string? Cardapio { get; set; }
