@@ -1,4 +1,5 @@
-﻿using ReservaRefeicao.Model;
+﻿using Microsoft.EntityFrameworkCore;
+using ReservaRefeicao.Model;
 using ReservaRefeicao.Services;
 using ReservaRefeicao.Views;
 using System;
@@ -19,6 +20,17 @@ namespace ReservaRefeicao.ModelView
             set => SetProperty(ref _codigoFuncionario, value);
         }
 
+        public string CurrentDate { get; set; } = DateTime.Now.ToString("D");
+
+        public List<Refeicao> CardapioDoDia
+        {
+            get => _cardapioDoDia;
+            set
+            {
+                _cardapioDoDia = value;
+                OnPropertyChanged();
+            }
+        }
         // Propriedade que controla se a autenticação está em andamento
         private bool _isAuthenticating;
         public bool IsAuthenticating
@@ -28,22 +40,33 @@ namespace ReservaRefeicao.ModelView
         }
 
         private readonly GestorSessaoService _gestorDeSessao;
+        private readonly GestorCardapioService _gestorCardapio;
         private readonly Sessao _sessaoUsuario;
+        private List<Refeicao> _cardapioDoDia;
 
         public ICommand AutenticarCommand { get; }
 
-        public AuthenticationViewModel(GestorSessaoService gestorDeReserva, Sessao sessaoUsuario)
+        public AuthenticationViewModel(GestorSessaoService gestorDeReserva, GestorCardapioService gestoCardapioService,Sessao sessaoUsuario)
         {
             _gestorDeSessao = gestorDeReserva;
             _sessaoUsuario = sessaoUsuario;
+            _gestorCardapio = gestoCardapioService;
             _codigoFuncionario = null;
+            CarregarCardapioDoDia();
 
             AutenticarCommand = new Command(async () => await Autenticar());
+        }
+
+        private void CarregarCardapioDoDia()
+        {
+            CardapioDoDia = _gestorCardapio.ObterCardapioDoDia();
+            Console.WriteLine(CardapioDoDia.Count);
         }
 
         public async Task Autenticar()
         {
             // Lógica de autenticação, usando _gestorDeReserva
+            
             if (CodigoFuncionario != null)
             {
                 int Repreg = (int)CodigoFuncionario;

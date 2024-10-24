@@ -6,6 +6,8 @@ using ReservaRefeicao.Model;
 using ReservaRefeicao.ModelView;
 using ReservaRefeicao.Views;
 using ReservaRefeicao.ViewModels;
+using Microsoft.Extensions.Configuration;
+using System.Reflection;
 
 namespace ReservaRefeicao
 {
@@ -23,26 +25,40 @@ namespace ReservaRefeicao
                 });
 
 
-            // Configurar o DbContext para SQL Server
+            // Carregar configurações do appsettings.json
+            var a = Assembly.GetExecutingAssembly();
+            using var stream = a.GetManifestResourceStream("ReservaRefeicao.appsettings.json");
+
+            var config = new ConfigurationBuilder()
+                .AddJsonStream(stream) // Carrega o appsettings.json
+                .Build();
+
+            // Adicionar a configuração ao IServiceCollection
+            builder.Configuration.AddConfiguration(config);
+
+            // Registrar o DbContext com a ConnectionString do appsettings.json
             builder.Services.AddDbContext<DbContextServices>(options =>
             {
-                options.UseSqlServer(Configuracao.ObterInstancia().ObterConnectionString("SistemaTramontina").ConnectionString);
+                var connectionString = config.GetConnectionString("SistemaTramontina");
+                options.UseSqlServer(connectionString);
             });
 
+            //Registra os serviços
             builder.Services.AddTransient<GestorSessaoService>();
+            builder.Services.AddTransient<GestorCardapioService>();
 
             // Registra a SessaoUsuario
             builder.Services.AddSingleton<Sessao>();
 
-            // Registra o AuthenticationViewModel
+            // Registra as Views e suas ViewModels
             builder.Services.AddTransient<AuthenticationViewModel>();
             builder.Services.AddTransient<AuthenticationView>();
             builder.Services.AddTransient<CardapioViewModel>();
             builder.Services.AddTransient<CardapioView>();
 
-            //#if DEBUG
-            //            builder.Logging.AddDebug();
-            //#endif
+#if DEBUG
+            builder.Logging.AddDebug();
+#endif
 
             return builder.Build();
         }

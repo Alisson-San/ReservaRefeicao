@@ -1,19 +1,77 @@
-<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:ReservaRefeicao.ModelView"
              x:Class="ReservaRefeicao.Views.AuthenticationView"
              Title="Autenticação">
 
-    <StackLayout Padding="20">
-        <Label Text="Digite seu código de funcionário" />
+    <Grid Padding="10" ColumnSpacing="10" RowSpacing="10">
+        <!-- Definir linhas e colunas para organizar os elementos -->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
 
-        <!-- Captura o evento de pressionar Enter -->
-        <Entry Placeholder="Código de Funcionário" 
-               Text="{Binding CodigoFuncionario}" 
-               ReturnType="Done"
-               Completed="OnCompleted" />
+        <!-- Cabeçalho com a data -->
+        <StackLayout Grid.Row="0" HorizontalOptions="Center">
+            <Label Text="Cardápio do dia"
+                   FontSize="28"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center" />
+            <Label Text="{Binding CurrentDate}"
+                   FontSize="18"
+                   HorizontalOptions="Center" />
+        </StackLayout>
 
-        <Button Text="Autenticar" Command="{Binding AutenticarCommand}" />
-    </StackLayout>
+        <!-- Exibição dos blocos de cardápio -->
+        <CollectionView Grid.Row="1"
+                        ItemsSource="{Binding CardapioDoDia}"
+                        HorizontalOptions="FillAndExpand"
+                        VerticalOptions="FillAndExpand"
+                        Margin="0,10,0,0">
+            <!-- Layout horizontal ou grid adaptável -->
+            <CollectionView.ItemsLayout>
+                <GridItemsLayout Orientation="Vertical"
+                                 Span= "{Binding CardapioDoDia.Count}"
+                                 VerticalItemSpacing="30"
+                                 HorizontalItemSpacing="30" />
+            </CollectionView.ItemsLayout>
 
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Frame BorderColor="Black"
+                           Padding="20"
+                           HeightRequest="300"
+                           WidthRequest="250"
+                           CornerRadius="25"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center">
+                        <StackLayout>
+                            <Label Text="{Binding Tipo}"
+                                   FontSize="16"
+                                   HorizontalOptions="Center" 
+                                   Margin="10 "/>
+                            <Label Text="{Binding Cardapio}"
+                                   FontSize="14"
+                                   HorizontalOptions="Center" />
+                        </StackLayout>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <!-- Entrada de Código do Funcionário -->
+        <Grid Grid.Row="2" ColumnDefinitions="*,Auto" VerticalOptions="End" Padding="0,10,0,0">
+            <Entry x:Name="codigoFuncionarioEntry"
+                   Placeholder="Código Funcionário"
+                   Keyboard="Numeric"
+                   Text="{Binding CodigoFuncionario}"
+                   HorizontalOptions="FillAndExpand"
+                   VerticalOptions="Center"
+                   Margin="0,0,10,0"
+                   HeightRequest="50"
+                   Completed="OnCompleted"
+                   Unfocused="OnCompleted"/>
+        </Grid>
+    </Grid>
 </ContentPage>

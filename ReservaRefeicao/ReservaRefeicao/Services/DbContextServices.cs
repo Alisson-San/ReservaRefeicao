@@ -1,5 +1,6 @@
 ﻿using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using ReservaRefeicao.Model;
 using ReservaRefeicao.Utils;
 using System;
@@ -13,10 +14,13 @@ namespace ReservaRefeicao.Services
 {
     public class DbContextServices : DbContext
     {
+        private readonly Configuracao _config;
+
         private byte[] cookie;
 
-        public DbContextServices(DbContextOptions<DbContextServices> options): base (options)
+        public DbContextServices(DbContextOptions<DbContextServices> options, IConfiguration config): base (options)
         {
+            _config = new Configuracao(config);
             Database.GetDbConnection().Open();
             cookie = SetAppRole("RefeicaoAppRole", "Botcha123");
         }
@@ -81,7 +85,7 @@ namespace ReservaRefeicao.Services
             stringConexao += "-DEBUG";
 #endif
 
-            string connectionString = Configuracao.ObterInstancia().ObterConnectionString(stringConexao).ConnectionString;
+            string connectionString = _config.ObterConnectionString(stringConexao);
 
             optionsBuilder.UseSqlServer(connectionString);
 

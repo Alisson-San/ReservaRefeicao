@@ -18,7 +18,6 @@ namespace ReservaRefeicao.ViewModels
         public CardapioViewModel(Sessao sessaoUsuario)
         {
             _sessaoUsuario = sessaoUsuario;
-
             _sessaoUsuario.SessaoEncerrada += OnSessaoEncerrada;
         }
 
@@ -41,10 +40,22 @@ namespace ReservaRefeicao.ViewModels
             }
         }
 
+        public void OnAppearing()
+        {
+            // Carrega o cardápio quando a página aparecer
+            //    CarregarCardapioAsync();
+        }
+
+        public void StartTimer()
+        {
+            // Inicia o timer de sessao de usuario quando a pagina aparecer
+            _sessaoUsuario.IniciarTimer();
+        }
 
         private async void OnSessaoEncerrada()
         {
             // Navega para a tela de autenticação
+            this.Dispose();
             await Shell.Current.GoToAsync($"//AuthenticationView");
         }
 

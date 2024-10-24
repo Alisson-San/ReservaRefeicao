@@ -1,31 +1,35 @@
-﻿using System.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 
 namespace ReservaRefeicao.Utils
 {
     public class Configuracao
     {
-        private static Configuracao _instancia = null;
+        private readonly IConfiguration _configuration;
+
+        // Injeção de dependência do IConfiguration
+        public Configuracao(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
 
         public string ObterConfiguracao(string nomeConfiguracao)
         {
-            if (ConfigurationManager.AppSettings[nomeConfiguracao] == null)
-                throw new Exception("Você deve inserir a appSetting \"" + nomeConfiguracao + "\" no .config !");
-            return ConfigurationManager.AppSettings[nomeConfiguracao];
+            var valor = _configuration["AppSettings:" + nomeConfiguracao];
+            if (string.IsNullOrEmpty(valor))
+            {
+                throw new Exception("Você deve inserir a configuração \"" + nomeConfiguracao + "\" no appsettings.json!");
+            }
+            return valor;
         }
 
-        public ConnectionStringSettings ObterConnectionString(string nomeConnectionString)
+        public string ObterConnectionString(string nomeConnectionString)
         {
-            if (ConfigurationManager.ConnectionStrings[nomeConnectionString].ConnectionString == null)
-                throw new Exception("Você deve inserir a connectionString \"" + nomeConnectionString + "\" no .config !");
-            return ConfigurationManager.ConnectionStrings[nomeConnectionString];
+            var connectionString = _configuration.GetConnectionString(nomeConnectionString);
+            if (string.IsNullOrEmpty(connectionString))
+            {
+                throw new Exception("Você deve inserir a connectionString \"" + nomeConnectionString + "\" no appsettings.json!");
+            }
+            return connectionString;
         }
-
-        public static Configuracao ObterInstancia()
-        {
-            if (_instancia == null)
-                _instancia = new Configuracao();
-            return _instancia;
-        }
-
     }
 }
