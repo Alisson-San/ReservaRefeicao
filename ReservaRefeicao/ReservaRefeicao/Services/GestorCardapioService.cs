@@ -31,22 +31,12 @@ namespace ReservaRefeicao.Services
                 .ToListAsync();
         }
 
-        public List<Refeicao> ObterCardapioDoDia()
+        public async Task<List<Refeicao>> ObterCardapioDoDia()
         {
-#if (!DEBUG)
+            _dbContext.Checkconnection();
             return await _dbContext.refeicaos
                 .Where(r => r.Data == DateTime.Today)
                 .ToListAsync();
-#else
-            var dataTeste = DateTime.Parse("2024-10-05");
-            _dbContext.Checkconnection();
-            var Refeicoes = _dbContext.refeicaos
-            .Where(r => r.Data == dataTeste)
-            .ToList();
-            if(Refeicoes.Count == 0)
-                throw new Exception("Nenhuma refeição encontrada para o dia de hoje");
-            return Refeicoes;
-#endif
         }
     }
 }

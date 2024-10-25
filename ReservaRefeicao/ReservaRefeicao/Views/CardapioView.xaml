@@ -7,8 +7,55 @@
     <StackLayout Padding="20">
         <Label Text="Bem-vindo(a)," />
         <Label Text="{Binding NomeFuncionario}" FontSize="Large" FontAttributes="Bold"/>
-        <!-- Aqui virá a lógica de escolha de cardápio -->
-        <Button Text="Escolher Cardápio" />
+        <Grid ColumnDefinitions="*,*,*">
+            <!-- Botão Anterior -->
+            <Button Text="←" 
+                Command="{Binding DiaAnteriorCommand}" 
+                IsEnabled="{Binding PodeNavegarAnterior}" 
+                Grid.Column="0" 
+                HorizontalOptions="Start"/>
+
+            <!-- Indicação do dia atual -->
+            <Label Text="{Binding DiaAtual}" 
+               Grid.Column="1" 
+               HorizontalOptions="Center"/>
+
+            <!-- Botão Próximo -->
+            <Button Text="→" 
+                Command="{Binding DiaProximoCommand}" 
+                IsEnabled="{Binding PodeNavegarProximo}" 
+                Grid.Column="2" 
+                HorizontalOptions="End"/>
+        </Grid>
+
+        <!-- Listagem de Cardápios -->
+        <CollectionView ItemsSource="{Binding CardapiosDoDia}" 
+                    SelectionMode="Single" 
+                    SelectedItem="{Binding CardapioSelecionado}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Frame BorderColor="{Binding IsSelected, Converter={StaticResource SelectedColorConverter}}"
+                       Padding="20" 
+                       CornerRadius="10" 
+                       BackgroundColor="White">
+                        <StackLayout>
+                            <Label Text="{Binding Nome}"
+                               FontSize="16" 
+                               HorizontalOptions="Center"/>
+                            <Label Text="{Binding Tipo}"
+                               FontSize="12"
+                               HorizontalOptions="Center"/>
+                        </StackLayout>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <!-- Botão para Reservar -->
+        <Button Text="Reservar"
+            Command="{Binding ReservarCommand}" 
+            IsEnabled="{Binding CardapioSelecionado, Converter={StaticResource NullToBoolConverter}}"/>
+
     </StackLayout>
 
 </ContentPage>

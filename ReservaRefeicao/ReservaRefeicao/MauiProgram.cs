@@ -49,6 +49,7 @@ namespace ReservaRefeicao
 
             // Registra a SessaoUsuario
             builder.Services.AddSingleton<Sessao>();
+            builder.Services.AddSingleton<IAlertService, AlertService>();
 
             // Registra as Views e suas ViewModels
             builder.Services.AddTransient<AuthenticationViewModel>();

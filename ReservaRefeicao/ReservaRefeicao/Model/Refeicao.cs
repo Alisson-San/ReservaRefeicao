@@ -19,7 +19,7 @@ namespace ReservaRefeicao.Model
 
         [Required]
         [MaxLength(50)]
-        public required string Nome{ get; set; }
+        public required string Nome { get; set; }
 
         [Required]
         [MaxLength(50)]
@@ -27,5 +27,13 @@ namespace ReservaRefeicao.Model
 
         public string? Cardapio { get; set; }
 
+        public string? CardapioFormatado {
+            get {
+                if (Cardapio == null)
+                    return null;
+
+                return Cardapio.Replace(";", "\n").Replace(" \n", "\n").Replace("\n ", "\n");
+            }
+        }
     }
 }

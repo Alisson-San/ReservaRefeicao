@@ -16,12 +16,11 @@ public partial class AuthenticationView : ContentPage
         BindingContext = _viewModel;
     }
 
-    protected override void OnAppearing()
+    protected override async void OnAppearing()
     {
         base.OnAppearing();
         codigoFuncionarioEntry.Focus();
         _viewModel.Limpar(); // Limpa a sessão do usuário
-
     }
 
     private async void OnItemAppearing(object sender, EventArgs e)

@@ -9,8 +9,9 @@ namespace ReservaRefeicao.Model
     public class Sessao
     {
         public Funcionario FuncionarioAtual { get; private set; }
+        public List<Reserva> ReservasSemana { get; private set; }
         private Timer _timer;
-        private const int TempoLimiteInatividade = 5000; // 60 segundos
+        private const int TempoLimiteInatividade = 600000; // 60 segundos
         private bool _sessaoCarregada;
 
         public event Action SessaoEncerrada;
@@ -28,11 +29,12 @@ namespace ReservaRefeicao.Model
                 EncerrarSessao();
         }
 
-        public bool IniciarSessao(Funcionario funcionario)
+        public bool IniciarSessao(Funcionario funcionario, List<Reserva> reservasSemana)
         {
             if (funcionario != null)
             {
                 FuncionarioAtual = funcionario;
+                ReservasSemana = reservasSemana;
                 ResetarTimer();
                 _sessaoCarregada = false;
                 return true;
@@ -47,7 +49,7 @@ namespace ReservaRefeicao.Model
             _timer.Change(TempoLimiteInatividade, Timeout.Infinite);
         }
 
-        public void EncerrarSessao()
+        public async Task EncerrarSessao()
         {
             FuncionarioAtual = null;
             _sessaoCarregada = false;

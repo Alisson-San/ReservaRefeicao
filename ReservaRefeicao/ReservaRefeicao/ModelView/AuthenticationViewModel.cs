@@ -39,6 +39,7 @@ namespace ReservaRefeicao.ModelView
             set => SetProperty(ref _isAuthenticating, value);
         }
 
+        private readonly IAlertService _alertService;
         private readonly GestorSessaoService _gestorDeSessao;
         private readonly GestorCardapioService _gestorCardapio;
         private readonly Sessao _sessaoUsuario;
@@ -46,21 +47,22 @@ namespace ReservaRefeicao.ModelView
 
         public ICommand AutenticarCommand { get; }
 
-        public AuthenticationViewModel(GestorSessaoService gestorDeReserva, GestorCardapioService gestoCardapioService,Sessao sessaoUsuario)
+        public AuthenticationViewModel(IAlertService alertService,GestorSessaoService gestorDeReserva, GestorCardapioService gestoCardapioService,Sessao sessaoUsuario)
         {
+            _alertService = alertService;
             _gestorDeSessao = gestorDeReserva;
             _sessaoUsuario = sessaoUsuario;
             _gestorCardapio = gestoCardapioService;
             _codigoFuncionario = null;
             CarregarCardapioDoDia();
-
             AutenticarCommand = new Command(async () => await Autenticar());
         }
 
-        private void CarregarCardapioDoDia()
+        private async Task CarregarCardapioDoDia()
         {
-            CardapioDoDia = _gestorCardapio.ObterCardapioDoDia();
-            Console.WriteLine(CardapioDoDia.Count);
+            CardapioDoDia = await _gestorCardapio.ObterCardapioDoDia();
+            if (CardapioDoDia.Count == 0)
+                    await _alertService.DisplayAlertAsync("Erro ao carregar cardápio", $"Nenhum cardápio encontrado para {DateTime.Today.ToString("D")}", "OK");
         }
 
         public async Task Autenticar()
@@ -74,27 +76,24 @@ namespace ReservaRefeicao.ModelView
 
                 if (funcionario != null)
                 {
-                    _sessaoUsuario.IniciarSessao(funcionario);
+                    var reservas = await _gestorDeSessao.ObterReservasSemanalFuncionario(Repreg);
+                    _sessaoUsuario.IniciarSessao(funcionario,reservas);
                     if (Shell.Current != null)
-                    {
-                        try
-                        {
-                            await Shell.Current.GoToAsync($"{nameof(CardapioView)}?nomeFuncionario={Uri.EscapeDataString(funcionario.Nome)}");
-                        }
-                        catch (Exception ex) { Console.WriteLine(ex.Message); }
-                    }
+                       await Shell.Current.GoToAsync($"{nameof(CardapioView)}?nomeFuncionario={Uri.EscapeDataString(funcionario.Nome)}");
+                            
                 }
                 else
-                {
-                    // Exibir erro
+                {   
+                    _codigoFuncionario = null;
+                    await _alertService.DisplayAlertAsync("Autenticação", "Funcionario Não Encontrado", "OK");
                 }
             }
         }
 
-        public void Limpar()
+        public async Task Limpar()
         {
             CodigoFuncionario = null;
-            _sessaoUsuario.EncerrarSessao();
+            await _sessaoUsuario.EncerrarSessao();
         }
     }
 }

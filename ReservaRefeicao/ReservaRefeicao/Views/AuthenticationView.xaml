@@ -50,10 +50,15 @@
                             <Label Text="{Binding Tipo}"
                                    FontSize="16"
                                    HorizontalOptions="Center" 
+                                   Margin="1"/>
+                            <Label Text="{Binding Nome}"
+                                   FontSize="16"
+                                   HorizontalOptions="Center" 
                                    Margin="10 "/>
-                            <Label Text="{Binding Cardapio}"
-                                   FontSize="14"
-                                   HorizontalOptions="Center" />
+                            <Label Text="{Binding CardapioFormatado}"
+                                   FontSize="12"
+                                   HorizontalOptions="CenterAndExpand"
+                                   HorizontalTextAlignment="Center"/>
                         </StackLayout>
                     </Frame>
                 </DataTemplate>
@@ -70,8 +75,7 @@
                    VerticalOptions="Center"
                    Margin="0,0,10,0"
                    HeightRequest="50"
-                   Completed="OnCompleted"
-                   Unfocused="OnCompleted"/>
+                   Completed="OnCompleted"/>
         </Grid>
     </Grid>
 </ContentPage>

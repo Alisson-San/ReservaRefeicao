@@ -96,5 +96,6 @@ namespace ReservaRefeicao.Services
         public DbSet<Secao> secaos { get; set; }
         public DbSet<Predio> predios { get; set; }
         public DbSet<Refeicao> refeicaos { get; set; }
+        public DbSet<Reserva> reservas { get; set; }
     }
 }
