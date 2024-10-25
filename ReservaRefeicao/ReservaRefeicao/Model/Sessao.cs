@@ -11,7 +11,7 @@ namespace ReservaRefeicao.Model
         public Funcionario FuncionarioAtual { get; private set; }
         public List<Reserva> ReservasSemana { get; private set; }
         private Timer _timer;
-        private const int TempoLimiteInatividade = 600000; // 60 segundos
+        private const int TempoLimiteInatividade = 50000; // 60 segundos
         private bool _sessaoCarregada;
 
         public event Action SessaoEncerrada;

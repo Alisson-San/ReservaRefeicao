@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Microsoft.Extensions.Logging;
 using Microsoft.Maui.Controls;
 using ReservaRefeicao.Model;
 using ReservaRefeicao.ModelView;
@@ -13,13 +13,10 @@ namespace ReservaRefeicao.ViewModels
     public class CardapioViewModel : ViewModelBase, IQueryAttributable
     {
         private readonly GestorCardapioService _gestorCardapioService;
-
         private readonly Sessao _sessaoUsuario;
         private string _nomeFuncionario;
         private DateTime _diaAtual;
-        private List<Refeicao> _cardapioDoDia;
         private List<Refeicao> _cardapioDaSemana;
-
 
         public Refeicao CardapioSelecionado { get; set; }
 
@@ -27,16 +24,8 @@ namespace ReservaRefeicao.ViewModels
         public ICommand DiaProximoCommand { get; }
         public ICommand ReservarCommand { get; }
 
-        public List<Refeicao> CardapioDoDia
-        {
-            get => _cardapioDoDia;
-            set
-            {
-                _cardapioDoDia = value;
-                OnPropertyChanged();
-            }
-        }
-
+        // ObservableCollection para o Binding no CollectionView
+        public ObservableCollection<Refeicao> CardapiosDoDia { get; } = new ObservableCollection<Refeicao>();
 
         public CardapioViewModel(Sessao sessaoUsuario, GestorCardapioService gestorCardapioService)
         {
@@ -52,9 +41,6 @@ namespace ReservaRefeicao.ViewModels
 
         private void DefineActualTiming()
         {
-            // Define o dia atual para conforme a data atual
-            // Se o dia atual ja tiver passado as 8:30 da manhã o dia atual é um dia seguinte
-            // Se o funcionario é Turno N então o dia atual é um dia a frente
             _diaAtual = DateTime.Now;
             if (_sessaoUsuario.FuncionarioAtual.Turno == "N")
             {
@@ -66,23 +52,21 @@ namespace ReservaRefeicao.ViewModels
             }
         }
 
-        // Propriedade que será vinculada à View para exibir o nome do funcionário
         public string NomeFuncionario
         {
             get => _nomeFuncionario;
             set
             {
                 _nomeFuncionario = value;
-                OnPropertyChanged(); // Notifica a View de que a propriedade mudou
+                OnPropertyChanged();
             }
         }
 
         public string DiaAtual
         {
             get => _diaAtual.ToString("D");
-            set
+            private set
             {
-                _nomeFuncionario = value;
                 OnPropertyChanged(); // Notifica a View de que a propriedade mudou
             }
         }
@@ -97,19 +81,11 @@ namespace ReservaRefeicao.ViewModels
 
         public void OnAppearing()
         {
-            // Carrega o cardápio quando a página aparecer
-            //    CarregarCardapioAsync();
-        }
-
-        public void StartTimer()
-        {
-            // Inicia o timer de sessao de usuario quando a pagina aparecer
             _sessaoUsuario.IniciarTimer();
         }
 
         private async void OnSessaoEncerrada()
         {
-            // Navega para a tela de autenticação
             this.Dispose();
             await Shell.Current.GoToAsync($"//AuthenticationView");
         }
@@ -119,18 +95,26 @@ namespace ReservaRefeicao.ViewModels
             _sessaoUsuario.SessaoEncerrada -= OnSessaoEncerrada;
         }
 
-
-        // Simulação do carregamento de um cardápio
         public async Task CarregarCardapioAsync()
         {
             _cardapioDaSemana = await _gestorCardapioService.ObterCardapioDaSemana();
             await AtualizarCardapios();
         }
 
-        private Task AtualizarCardapios()
+        private async Task AtualizarCardapios()
         {
-            CardapioDoDia = _cardapioDaSemana.FindAll(r => r.Data.Date == _diaAtual.Date);
-            return Task.CompletedTask;
+            // Limpa o ObservableCollection antes de adicionar os itens do dia
+            CardapiosDoDia.Clear();
+
+            var cardapiosDoDia = _cardapioDaSemana.FindAll(r => r.Data.Date == _diaAtual.Date);
+
+            // Adiciona cada item individualmente para que o CollectionView seja notificado
+            foreach (var refeicao in cardapiosDoDia)
+            {
+                CardapiosDoDia.Add(refeicao);
+            }
+
+            await Task.CompletedTask;
         }
 
         private async Task NavegarDiaAnterior()
@@ -141,7 +125,7 @@ namespace ReservaRefeicao.ViewModels
 
         private async Task NavegarDiaProximo()
         {
-            _diaAtual.AddDays(-1);
+            _diaAtual = _diaAtual.AddDays(1);
             await AtualizarCardapios();
         }
 
@@ -151,6 +135,12 @@ namespace ReservaRefeicao.ViewModels
             {
                 // Lógica de reserva
             }
+        }
+
+        public void StartTimer()
+        {
+            // Inicia o timer de sessao de usuario quando a pagina aparecer
+            _sessaoUsuario.IniciarTimer();
         }
     }
 }
