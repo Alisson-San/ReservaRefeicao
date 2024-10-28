@@ -6,12 +6,14 @@ using System.Threading;
 
 namespace ReservaRefeicao.Model
 {
-    public class Sessao
+    public class Sessao : IDisposable
     {
+        private readonly object _timerLock = new object();
+
         public Funcionario FuncionarioAtual { get; private set; }
         public List<Reserva> ReservasSemana { get; private set; }
         private Timer _timer;
-        private const int TempoLimiteInatividade = 50000; // 60 segundos
+        private const int TempoLimiteInatividade = 5000; // 60 segundos
         private bool _sessaoCarregada;
 
         public event Action SessaoEncerrada;
@@ -51,16 +53,31 @@ namespace ReservaRefeicao.Model
 
         public async Task EncerrarSessao()
         {
-            FuncionarioAtual = null;
-            _sessaoCarregada = false;
-            _timer.Change(Timeout.Infinite, Timeout.Infinite); // Para o timer
-            SessaoEncerrada?.Invoke(); // Disparar evento para retornar à tela inicial
+            if (_sessaoCarregada)
+            {
+                FuncionarioAtual = null;
+                _sessaoCarregada = false;
+                _timer.Change(Timeout.Infinite, Timeout.Infinite); // Para o timer
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    SessaoEncerrada?.Invoke(); // Disparar evento para retornar à tela inicial
+                });
+                
+            }
         }
 
         public void ResetarTimer()
         {
-            // Reinicia o timer sempre que houver uma ação do usuário
-            _timer.Change(TempoLimiteInatividade, Timeout.Infinite);
+            lock (_timerLock)
+            {
+                // Reinicia o timer sempre que houver uma ação do usuário
+                _timer.Change(TempoLimiteInatividade, Timeout.Infinite);
+            }
+        }
+
+        public void Dispose()
+        {
+            _timer?.Dispose();
         }
     }
 }

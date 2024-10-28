@@ -8,6 +8,7 @@ namespace ReservaRefeicao.Views
         {
             InitializeComponent();
             BindingContext = viewModel;
+            viewModel.AnimarTransicaoEvent += async (paraDireita) => await AnimarTransicao(paraDireita);
         }
 
         // Manipulador do evento Appearing
@@ -20,6 +21,20 @@ namespace ReservaRefeicao.Views
             {
                 viewModel.StartTimer(); 
             }
+        }
+
+        private async Task AnimarTransicao(bool paraEsquerda)
+        {
+            // Define a direção do deslocamento
+            double startTranslation = paraEsquerda ? 1000 : -1000;
+            double endTranslation = 0;
+
+            // Realiza o deslocamento inicial para fora da tela
+            CollectionView collectionView = CardapioCollectionView;
+            await collectionView.TranslateTo(startTranslation, 0, 0);
+
+            // Anima o deslocamento para o centro da tela
+            await collectionView.TranslateTo(endTranslation, 0, 300, Easing.CubicInOut);
         }
 
     }

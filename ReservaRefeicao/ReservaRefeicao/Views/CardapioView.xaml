@@ -29,7 +29,8 @@
         </Grid>
 
         <!-- Listagem de Cardápios -->
-        <CollectionView 
+        <CollectionView
+                    x:Name="CardapioCollectionView"
                     Grid.Row="1"
                     ItemsSource="{Binding CardapiosDoDia}"
                     HorizontalOptions="FillAndExpand"

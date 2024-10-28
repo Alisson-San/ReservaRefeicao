@@ -24,6 +24,27 @@ namespace ReservaRefeicao.ViewModels
         public ICommand DiaProximoCommand { get; }
         public ICommand ReservarCommand { get; }
 
+        public event Action<bool> AnimarTransicaoEvent;
+
+        public string NomeFuncionario
+        {
+            get => _nomeFuncionario;
+            set
+            {
+                _nomeFuncionario = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string DiaAtual
+        {
+            get => _diaAtual.ToString("D");
+            private set
+            {
+                OnPropertyChanged(); // Notifica a View de que a propriedade mudou
+            }
+        }
+
         // ObservableCollection para o Binding no CollectionView
         public ObservableCollection<Refeicao> CardapiosDoDia { get; } = new ObservableCollection<Refeicao>();
 
@@ -52,25 +73,6 @@ namespace ReservaRefeicao.ViewModels
             }
         }
 
-        public string NomeFuncionario
-        {
-            get => _nomeFuncionario;
-            set
-            {
-                _nomeFuncionario = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public string DiaAtual
-        {
-            get => _diaAtual.ToString("D");
-            private set
-            {
-                OnPropertyChanged(); // Notifica a View de que a propriedade mudou
-            }
-        }
-
         public void ApplyQueryAttributes(IDictionary<string, object> query)
         {
             if (query.TryGetValue("nomeFuncionario", out var nome))
@@ -84,11 +86,17 @@ namespace ReservaRefeicao.ViewModels
             _sessaoUsuario.IniciarTimer();
         }
 
-        private async void OnSessaoEncerrada()
+        private async Task OnSessaoEncerradaAsync()
         {
-            this.Dispose();
-            await Shell.Current.GoToAsync($"//AuthenticationView");
+            Dispose();
+            await Shell.Current.GoToAsync("//AuthenticationView");
         }
+
+        private void OnSessaoEncerrada()
+        {
+            _ = OnSessaoEncerradaAsync();
+        }
+
 
         public void Dispose()
         {
@@ -120,13 +128,18 @@ namespace ReservaRefeicao.ViewModels
         private async Task NavegarDiaAnterior()
         {
             _diaAtual = _diaAtual.AddDays(-1);
+            OnPropertyChanged(nameof(DiaAtual));
             await AtualizarCardapios();
+            AnimarTransicaoEvent?.Invoke(false);
+
         }
 
         private async Task NavegarDiaProximo()
         {
             _diaAtual = _diaAtual.AddDays(1);
+            OnPropertyChanged(nameof(DiaAtual));
             await AtualizarCardapios();
+            AnimarTransicaoEvent?.Invoke(true);
         }
 
         private void Reservar()
@@ -142,5 +155,7 @@ namespace ReservaRefeicao.ViewModels
             // Inicia o timer de sessao de usuario quando a pagina aparecer
             _sessaoUsuario.IniciarTimer();
         }
+
+
     }
 }
