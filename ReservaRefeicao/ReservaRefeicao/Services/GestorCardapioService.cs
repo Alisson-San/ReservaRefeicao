@@ -38,5 +38,23 @@ namespace ReservaRefeicao.Services
                 .Where(r => r.Data == DateTime.Today)
                 .ToListAsync();
         }
+
+        public async Task AtualizarReserva(Reserva reservaExistente)
+        {
+            _dbContext.reservas.Update(reservaExistente);
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task AdicionarReserva(Reserva reserva)
+        {
+            _dbContext.reservas.Add(reserva);
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task RemoverReserva(Reserva reserva)
+        {
+            _dbContext.reservas.Remove(reserva);
+            await _dbContext.SaveChangesAsync();
+        }
     }
 }

@@ -22,7 +22,7 @@ namespace ReservaRefeicao.ModelView
 
         public string CurrentDate { get; set; } = DateTime.Now.ToString("D");
 
-        public List<Refeicao> CardapioDoDia
+        public List<RefeicaoViewModel> CardapioDoDia
         {
             get => _cardapioDoDia;
             set
@@ -43,7 +43,7 @@ namespace ReservaRefeicao.ModelView
         private readonly GestorSessaoService _gestorDeSessao;
         private readonly GestorCardapioService _gestorCardapio;
         private readonly Sessao _sessaoUsuario;
-        private List<Refeicao> _cardapioDoDia;
+        private List<RefeicaoViewModel> _cardapioDoDia;
 
         public ICommand AutenticarCommand { get; }
 
@@ -60,7 +60,9 @@ namespace ReservaRefeicao.ModelView
 
         private async Task CarregarCardapioDoDia()
         {
-            CardapioDoDia = await _gestorCardapio.ObterCardapioDoDia();
+            var Cardapios = await _gestorCardapio.ObterCardapioDoDia();
+            CardapioDoDia = Cardapios.Select(c => new RefeicaoViewModel { Refeicao = c }).ToList();
+
             if (CardapioDoDia.Count == 0)
                     await _alertService.DisplayAlertAsync("Erro ao carregar cardápio", $"Nenhum cardápio encontrado para {DateTime.Today.ToString("D")}", "OK");
         }

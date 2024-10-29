@@ -47,11 +47,11 @@
                            HorizontalOptions="Center"
                            VerticalOptions="Center">
                         <StackLayout>
-                            <Label Text="{Binding Tipo}"
+                            <Label Text="{Binding Refeicao.Tipo}"
                                    FontSize="16"
                                    HorizontalOptions="Center" 
                                    Margin="1"/>
-                            <Label Text="{Binding Nome}"
+                            <Label Text="{Binding Refeicao.Nome}"
                                    FontSize="16"
                                    HorizontalOptions="Center" 
                                    Margin="10 "/>

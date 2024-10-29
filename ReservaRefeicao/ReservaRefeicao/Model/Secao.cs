@@ -15,7 +15,7 @@ namespace ReservaRefeicao.Model
         public short Codigo { get; set; }
 
         [StringLength(30)]
-        public string Nome { get; set; }
+        public required string Nome { get; set; }
 
         [ForeignKey("CodPredio")]
         public byte? CodPredio { get; set; }

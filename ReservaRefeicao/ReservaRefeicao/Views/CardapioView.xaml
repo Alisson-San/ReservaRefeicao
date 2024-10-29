@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:ReservaRefeicao.Utils"
              x:Class="ReservaRefeicao.Views.CardapioView"
              Title="Escolha de Cardápio">
-
+    
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <local:SelectedColorConverter x:Key="SelectedColorConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
     <StackLayout Padding="20">
         <Label Text="Bem-vindo(a)," />
         <Label Text="{Binding NomeFuncionario}" FontSize="Large" FontAttributes="Bold"/>
@@ -36,8 +42,10 @@
                     HorizontalOptions="FillAndExpand"
                     VerticalOptions="FillAndExpand"
                     Margin="0,10,0,0"
-                    SelectionMode="Single" 
-                    SelectedItem="{Binding CardapioSelecionado}">
+                    SelectionMode="Multiple" 
+                    SelectionChanged="OnSelectionChanged"
+                    SelectedItem="{Binding CardapiosSelecionados}">
+            
             <!-- Layout horizontal ou grid adaptável -->
             <CollectionView.ItemsLayout>
                 <GridItemsLayout Orientation="Vertical"
@@ -48,7 +56,8 @@
             
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <Frame BorderColor="{Binding IsSelected, Converter={StaticResource SelectedColorConverter}}"
+                    <Frame BorderColor="Black"
+                           BackgroundColor="{Binding CorExibicao}"
                            Padding="20"
                            HeightRequest="300"
                            WidthRequest="250"
@@ -56,26 +65,23 @@
                            HorizontalOptions="Center"
                            VerticalOptions="Center">
                         <StackLayout>
-                            <Label Text="{Binding Nome}"
-                                FontSize="16"
-                                HorizontalOptions="Center" 
-                                Margin="1"/>
-                            <Label Text="{Binding Tipo}"
-                                FontSize="16"
-                                HorizontalOptions="Center" 
-                                Margin="10 "/>
+                            <Label Text="{Binding Refeicao.Nome}"
+                                   FontSize="16"
+                                   HorizontalOptions="Center" 
+                                   Margin="1"/>
+                            <Label Text="{Binding Refeicao.Tipo}"
+                                   FontSize="16"
+                                   HorizontalOptions="Center" 
+                                   Margin="10 "/>
                             <Label Text="{Binding CardapioFormatado}"
-                                FontSize="12"
-                                HorizontalOptions="CenterAndExpand"
-                                HorizontalTextAlignment="Center"/>
+                                   FontSize="12"
+                                   HorizontalOptions="CenterAndExpand"
+                                   HorizontalTextAlignment="Center"/>
                         </StackLayout>
                     </Frame>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
-
-        <!-- Botão para Reservar -->
-
     </StackLayout>
 
 </ContentPage>

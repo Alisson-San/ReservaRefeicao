@@ -1,3 +1,4 @@
+using ReservaRefeicao.Model;
 using ReservaRefeicao.ViewModels;
 
 namespace ReservaRefeicao.Views
@@ -35,6 +36,19 @@ namespace ReservaRefeicao.Views
 
             // Anima o deslocamento para o centro da tela
             await collectionView.TranslateTo(endTranslation, 0, 300, Easing.CubicInOut);
+        }
+
+        private void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var viewModel = BindingContext as CardapioViewModel;
+            if (viewModel != null)
+            {
+                viewModel.CardapiosSelecionados.Clear();
+                foreach (var item in e.CurrentSelection)
+                {
+                    viewModel.CardapiosSelecionados.Add(item as Refeicao);
+                }
+            }
         }
 
     }
