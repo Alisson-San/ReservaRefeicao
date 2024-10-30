@@ -47,7 +47,7 @@ namespace ReservaRefeicao.ViewModels
 
         // ObservableCollection para o Binding no CollectionView
         public ObservableCollection<RefeicaoViewModel> CardapiosDoDia { get; } = new ObservableCollection<RefeicaoViewModel>();
-        public ObservableCollection<Refeicao> CardapiosSelecionados { get; } = new ObservableCollection<Refeicao>();
+        public ObservableCollection<RefeicaoViewModel> CardapiosSelecionados { get; } = new ObservableCollection<RefeicaoViewModel>();
 
 
         public CardapioViewModel(Sessao sessaoUsuario, GestorCardapioService gestorCardapioService)
@@ -56,11 +56,10 @@ namespace ReservaRefeicao.ViewModels
             _gestorCardapioService = gestorCardapioService;
             _sessaoUsuario.SessaoEncerrada += OnSessaoEncerrada;
             DefineActualTiming();
+            if(AtualizarRefeicoesFuncionario().IsCompleted)
+                CarregarCardapioAsync();
             DiaAnteriorCommand = new Command(async () => await NavegarDiaAnterior());
             DiaProximoCommand = new Command(async () => await NavegarDiaProximo());
-            ReservarCommand = new Command<ObservableCollection<Refeicao>>(Reservar);
-            AtualizarRefeicoesFuncionario();
-            CarregarCardapioAsync();
         }
 
 
@@ -124,8 +123,8 @@ namespace ReservaRefeicao.ViewModels
             foreach (var refeicao in cardapiosDoDia)
             {
                 var refeicaoViewModel = new RefeicaoViewModel { Refeicao = refeicao };
-                refeicaoViewModel.CorExibicao = _sessaoUsuario.ReservasSemana.Any(r => r.CodRefeicao == refeicao.CodRefeicao)
-                    ? refeicao.Nome.Contains("CAFÉ") ? Colors.Orange : Colors.Green
+                refeicaoViewModel.CorExibicao = _sessaoUsuario.ReservasSemana.Any(r => r.Refeicao.CodRefeicao == refeicao.CodRefeicao)
+                    ? refeicao.Nome.Contains("CAFÉ") ? Colors.Orange : Colors.LightGreen
                     : Colors.Transparent;
 
                 CardapiosDoDia.Add(refeicaoViewModel);
@@ -133,20 +132,21 @@ namespace ReservaRefeicao.ViewModels
             OnPropertyChanged(nameof(CardapiosDoDia));
         }
 
-        private async Task AtualizarRefeicoesFuncionario()
+        private Task AtualizarRefeicoesFuncionario()
         {
             // Limpa o ObservableCollection antes de adicionar os itens do dia
             CardapiosSelecionados.Clear();
 
-            var cardapiosSelecionados = _sessaoUsuario.ReservasSemana.Select(r => r.Refeicao);
+            var cardapiosSelecionados = _sessaoUsuario.ReservasSemana.FindAll(r => r.Refeicao.Data == _diaAtual.Date).Select(r => r.Refeicao);
 
             // Adiciona cada item individualmente para que o CollectionView seja notificado
             foreach (var refeicao in cardapiosSelecionados)
             {
-                CardapiosSelecionados.Add(refeicao);
+                var refeicaoViewModel = new RefeicaoViewModel { Refeicao = refeicao };
+                CardapiosSelecionados.Add(refeicaoViewModel);
             }
             OnPropertyChanged();
-            await Task.CompletedTask;
+            return Task.CompletedTask;
         }
 
         private async Task NavegarDiaAnterior()
@@ -166,13 +166,17 @@ namespace ReservaRefeicao.ViewModels
             AnimarTransicaoEvent?.Invoke(true);
         }
 
-        private void Reservar(ObservableCollection<Refeicao> selectedItems)
+        public void Reservar()
         {
-            if (selectedItems.Count == 0 || selectedItems == null)
+            if (CardapiosSelecionados.Count > 0)
             {
-                // Lógica de reserva
-                return;
+                foreach (var refeicao in CardapiosSelecionados)
+                {
+                    if(refeicao != null)
+                    OnReservar(refeicao.Refeicao);
+                }
             }
+            return;
         }
 
         public void StartTimer()
@@ -181,15 +185,47 @@ namespace ReservaRefeicao.ViewModels
             _sessaoUsuario.IniciarTimer();
         }
 
-        private async void OnReservar(Refeicao refeicaoSelecionada)
+        private async Task OnReservar(Refeicao refeicaoSelecionada)
         {
-            var reservaExistente = _sessaoUsuario.ReservasSemana.FirstOrDefault(r => r.CodRefeicao == refeicaoSelecionada.CodRefeicao);
+            var reservaExistente = _sessaoUsuario.ReservasSemana.FindAll(r => r.Refeicao.Data == _diaAtual.Date);
+            var removido = false;
 
-            if (reservaExistente != null)
+            if (reservaExistente.Count > 0)
             {
-                // Atualiza a reserva existente, se necessário
-                reservaExistente.DataReserva = DateTime.Now;
-                await _gestorCardapioService.AtualizarReserva(reservaExistente);
+                foreach(var reserva in reservaExistente)
+                {
+                    if(reserva.CodRefeicao == refeicaoSelecionada.CodRefeicao)
+                    {
+                        await _gestorCardapioService.RemoverReserva(reserva);
+                        removido = true;
+                        break;
+                    }
+                }
+                if (!removido)
+                {
+
+                    foreach (var reserva in reservaExistente)
+                    {
+                        if (reserva.CodRefeicao != refeicaoSelecionada.CodRefeicao && !refeicaoSelecionada.Tipo.Contains("CAFÉ"))
+                        {
+                            reserva.CodRefeicao = refeicaoSelecionada.CodRefeicao;
+                            await _gestorCardapioService.AtualizarReserva(reserva);
+                            break;
+                        }
+                        else
+                        {
+                            // Cria nova reserva
+                            var novaReserva = new Reserva
+                            {
+                                Repreg = _sessaoUsuario.FuncionarioAtual.Repreg,
+                                CodRefeicao = refeicaoSelecionada.CodRefeicao,
+                                DataReserva = DateTime.Now
+                            };
+                            await _gestorCardapioService.AdicionarReserva(novaReserva);
+                            break;
+                        }
+                    }
+                }
             }
             else
             {
@@ -204,8 +240,10 @@ namespace ReservaRefeicao.ViewModels
 
                 await _gestorCardapioService.AdicionarReserva(novaReserva);
             }
+            _sessaoUsuario.AtualizarReservas( await _gestorCardapioService.ObterReservasSemanalFuncionario(_sessaoUsuario.FuncionarioAtual.Repreg));
 
             // Atualiza a UI
+            await AtualizarRefeicoesFuncionario();
             await AtualizarCardapios();
         }
 

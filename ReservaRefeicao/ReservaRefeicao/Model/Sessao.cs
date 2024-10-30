@@ -66,6 +66,11 @@ namespace ReservaRefeicao.Model
             }
         }
 
+        public void AtualizarReservas(List<Reserva> novaReservas)
+        {
+            ReservasSemana = novaReservas;
+        }
+
         public void ResetarTimer()
         {
             lock (_timerLock)

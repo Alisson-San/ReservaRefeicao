@@ -56,5 +56,18 @@ namespace ReservaRefeicao.Services
             _dbContext.reservas.Remove(reserva);
             await _dbContext.SaveChangesAsync();
         }
+
+        public async Task<List<Reserva>> ObterReservasSemanalFuncionario(int codigo)
+        {
+            var InitWeek = _dateHelper.GetFirstDayOfWeek(DateTime.Now);
+            var EndWeek = _dateHelper.GetLastDayOfWeek(DateTime.Now);
+
+            return await _dbContext.reservas
+                .Include(r => r.Refeicao)
+                .Where(r => r.Repreg == codigo
+                    && r.DataReserva >= InitWeek
+                    && r.DataReserva <= EndWeek)
+                .ToListAsync();
+        }
     }
 }

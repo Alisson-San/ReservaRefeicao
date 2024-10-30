@@ -78,7 +78,7 @@ namespace ReservaRefeicao.ModelView
 
                 if (funcionario != null)
                 {
-                    var reservas = await _gestorDeSessao.ObterReservasSemanalFuncionario(Repreg);
+                    var reservas = await _gestorCardapio.ObterReservasSemanalFuncionario(Repreg);
                     _sessaoUsuario.IniciarSessao(funcionario,reservas);
                     if (Shell.Current != null)
                        await Shell.Current.GoToAsync($"{nameof(CardapioView)}?nomeFuncionario={Uri.EscapeDataString(funcionario.Nome)}");

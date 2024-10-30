@@ -1,4 +1,5 @@
 using ReservaRefeicao.Model;
+using ReservaRefeicao.ModelView;
 using ReservaRefeicao.ViewModels;
 
 namespace ReservaRefeicao.Views
@@ -40,14 +41,15 @@ namespace ReservaRefeicao.Views
 
         private void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var viewModel = BindingContext as CardapioViewModel;
-            if (viewModel != null)
+            if (BindingContext is CardapioViewModel viewModel)
             {
                 viewModel.CardapiosSelecionados.Clear();
                 foreach (var item in e.CurrentSelection)
                 {
-                    viewModel.CardapiosSelecionados.Add(item as Refeicao);
+                    viewModel.CardapiosSelecionados.Add(item as RefeicaoViewModel);
                 }
+
+                viewModel.Reservar();
             }
         }
 
