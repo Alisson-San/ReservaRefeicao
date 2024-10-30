@@ -26,6 +26,31 @@ namespace ReservaRefeicao.ViewModels
 
         public event Action<bool> AnimarTransicaoEvent;
 
+
+        private bool _podeNavegarAnterior;
+        private bool _podeNavegarProximo;
+
+        public bool PodeNavegarAnterior
+        {
+            get => _podeNavegarAnterior;
+            set
+            {
+                _podeNavegarAnterior = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool PodeNavegarProximo
+        {
+            get => _podeNavegarProximo;
+            set
+            {
+                _podeNavegarProximo = value;
+                OnPropertyChanged();
+            }
+        }
+
+
         public string NomeFuncionario
         {
             get => _nomeFuncionario;
@@ -58,6 +83,7 @@ namespace ReservaRefeicao.ViewModels
             DefineActualTiming();
             if(AtualizarRefeicoesFuncionario().IsCompleted)
                 CarregarCardapioAsync();
+            AtualizarNavegacao();
             DiaAnteriorCommand = new Command(async () => await NavegarDiaAnterior());
             DiaProximoCommand = new Command(async () => await NavegarDiaProximo());
         }
@@ -66,11 +92,11 @@ namespace ReservaRefeicao.ViewModels
         private void DefineActualTiming()
         {
             _diaAtual = DateTime.Now;
-            if (_sessaoUsuario.FuncionarioAtual.Turno == "N")
+            if (_sessaoUsuario.FuncionarioAtual.Turno == "N" && _diaAtual.Hour <= 8 && _diaAtual.Minute <= 30)
             {
                 _diaAtual = _diaAtual.AddDays(1);
             }
-            else if (_diaAtual.Hour >= 8 && _diaAtual.Minute >= 30)
+            else if (_diaAtual.Hour >= 9)
             {
                 _diaAtual = _diaAtual.AddDays(1);
             }
@@ -106,10 +132,10 @@ namespace ReservaRefeicao.ViewModels
             _sessaoUsuario.SessaoEncerrada -= OnSessaoEncerrada;
         }
 
-        public async Task CarregarCardapioAsync()
+        public Task CarregarCardapioAsync()
         {
-            _cardapioDaSemana = await _gestorCardapioService.ObterCardapioDaSemana();
-            await AtualizarCardapios();
+            _cardapioDaSemana = _gestorCardapioService.ObterCardapioDaSemana();
+            return AtualizarCardapios();
         }
 
         private async Task AtualizarCardapios()
@@ -154,6 +180,7 @@ namespace ReservaRefeicao.ViewModels
             _diaAtual = _diaAtual.AddDays(-1);
             OnPropertyChanged(nameof(DiaAtual));
             await AtualizarCardapios();
+            await AtualizarNavegacao();
             AnimarTransicaoEvent?.Invoke(false);
 
         }
@@ -163,6 +190,7 @@ namespace ReservaRefeicao.ViewModels
             _diaAtual = _diaAtual.AddDays(1);
             OnPropertyChanged(nameof(DiaAtual));
             await AtualizarCardapios();
+            await AtualizarNavegacao();
             AnimarTransicaoEvent?.Invoke(true);
         }
 
@@ -245,6 +273,17 @@ namespace ReservaRefeicao.ViewModels
             // Atualiza a UI
             await AtualizarRefeicoesFuncionario();
             await AtualizarCardapios();
+        }
+
+        private Task AtualizarNavegacao()
+        {
+            // Verifica se pode navegar para o dia anterior
+            PodeNavegarAnterior = _diaAtual.AddDays(-1).Date.AddHours(8).AddMinutes(59) > DateTime.Today.AddHours(9);
+
+            // Verifica se há cardápios para o dia seguinte
+            var proximoDia = _diaAtual.AddDays(1);
+            PodeNavegarProximo = _cardapioDaSemana.Any(r => r.Data.Date == proximoDia.Date);
+            return Task.CompletedTask;
         }
 
     }

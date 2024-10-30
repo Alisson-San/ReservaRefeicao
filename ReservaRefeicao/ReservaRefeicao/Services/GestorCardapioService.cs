@@ -21,14 +21,14 @@ namespace ReservaRefeicao.Services
 
         }
 
-        public async Task<List<Refeicao>> ObterCardapioDaSemana()
+        public List<Refeicao> ObterCardapioDaSemana()
         {
             DateTime InitWeek = _dateHelper.GetFirstDayOfWeek(DateTime.Now);
             DateTime EndWeek = _dateHelper.GetLastDayOfWeek(DateTime.Now);
 
-            return await _dbContext.refeicaos
+            return _dbContext.refeicaos
                 .Where(r => r.Data >= InitWeek && r.Data <= EndWeek)
-                .ToListAsync();
+                .ToList();
         }
 
         public async Task<List<Refeicao>> ObterCardapioDoDia()

@@ -34,7 +34,6 @@ namespace ReservaRefeicao.Views
             // Realiza o deslocamento inicial para fora da tela
             CollectionView collectionView = CardapioCollectionView;
             await collectionView.TranslateTo(startTranslation, 0, 0);
-
             // Anima o deslocamento para o centro da tela
             await collectionView.TranslateTo(endTranslation, 0, 300, Easing.CubicInOut);
         }
