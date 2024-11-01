@@ -24,7 +24,7 @@
         </StackLayout>
 
         <!-- Exibição dos blocos de cardápio -->
-        <CollectionView Grid.Row="1"30
+        <CollectionView Grid.Row="1"
                         ItemsSource="{Binding CardapioDoDia}"
                         HorizontalOptions="FillAndExpand"
                         VerticalOptions="FillAndExpand"

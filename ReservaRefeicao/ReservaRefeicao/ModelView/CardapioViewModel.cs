@@ -120,7 +120,7 @@ namespace ReservaRefeicao.ViewModels
 
         private void DefineActualTiming()
         {
-            _diaAtual = DateTime.Now;
+            _diaAtual = DateTime.Now.AddDays(-2);
             if (_sessaoUsuario.FuncionarioAtual.Turno == "N" && _diaAtual.Hour <= 8 && _diaAtual.Minute <= 30)
             {
                 _diaAtual = _diaAtual.AddDays(1);
