@@ -2,9 +2,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:ReservaRefeicao.ModelView"
              x:Class="ReservaRefeicao.Views.AuthenticationView"
-             Title="Autenticação">
+             Title="">
 
-    <Grid Padding="10" ColumnSpacing="10" RowSpacing="10">
+    <Grid VerticalOptions="CenterAndExpand" Padding="0" ColumnSpacing="1" RowSpacing="2">
         <!-- Definir linhas e colunas para organizar os elementos -->
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -15,7 +15,7 @@
         <!-- Cabeçalho com a data -->
         <StackLayout Grid.Row="0" HorizontalOptions="Center">
             <Label Text="Cardápio do dia"
-                   FontSize="28"
+                   FontSize="24"
                    FontAttributes="Bold"
                    HorizontalOptions="Center" />
             <Label Text="{Binding CurrentDate}"
@@ -24,7 +24,7 @@
         </StackLayout>
 
         <!-- Exibição dos blocos de cardápio -->
-        <CollectionView Grid.Row="1"
+        <CollectionView Grid.Row="1"30
                         ItemsSource="{Binding CardapioDoDia}"
                         HorizontalOptions="FillAndExpand"
                         VerticalOptions="FillAndExpand"
@@ -33,16 +33,16 @@
             <CollectionView.ItemsLayout>
                 <GridItemsLayout Orientation="Vertical"
                                  Span= "{Binding CardapioDoDia.Count}"
-                                 VerticalItemSpacing="30"
+                                 VerticalItemSpacing="10"
                                  HorizontalItemSpacing="30" />
             </CollectionView.ItemsLayout>
 
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <Frame BorderColor="Black"
-                           Padding="20"
+                           Padding="0"
                            HeightRequest="300"
-                           WidthRequest="250"
+                           WidthRequest="220"
                            CornerRadius="25"
                            HorizontalOptions="Center"
                            VerticalOptions="Center">
@@ -50,14 +50,18 @@
                             <Label Text="{Binding Refeicao.Tipo}"
                                    FontSize="16"
                                    HorizontalOptions="Center" 
-                                   Margin="1"/>
+                                   Margin="1"
+                                   HorizontalTextAlignment="Center"/>
                             <Label Text="{Binding Refeicao.Nome}"
                                    FontSize="16"
                                    HorizontalOptions="Center" 
-                                   Margin="10 "/>
+                                   Margin="10 "
+                                   HorizontalTextAlignment="Center"/>
                             <Label Text="{Binding CardapioFormatado}"
                                    FontSize="12"
                                    HorizontalOptions="CenterAndExpand"
+                                   VerticalOptions="Center"
+                                   VerticalTextAlignment="Center"
                                    HorizontalTextAlignment="Center"/>
                         </StackLayout>
                     </Frame>

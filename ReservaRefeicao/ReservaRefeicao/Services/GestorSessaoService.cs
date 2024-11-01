@@ -19,7 +19,10 @@ namespace ReservaRefeicao.Services
 
         public async Task<Funcionario> ObterFuncionarioPorCodigo(int codigo)
         {
-            return await _dbContext.Funcionarios.FirstOrDefaultAsync(f => f.Repreg == codigo);
+            return await _dbContext.Funcionarios
+                .Include(f => f.Secao)
+                .Include(f => f.Secao.Predio)
+                .FirstOrDefaultAsync(f => f.Repreg == codigo);
         }
     }
 }

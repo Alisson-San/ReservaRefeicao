@@ -17,8 +17,9 @@ namespace ReservaRefeicao.Model
         [StringLength(30)]
         public required string Nome { get; set; }
 
-        [ForeignKey("CodPredio")]
         public byte? CodPredio { get; set; }
+
+        [ForeignKey("CodPredio")]
         public virtual Predio? Predio{ get; set; }
 
     }

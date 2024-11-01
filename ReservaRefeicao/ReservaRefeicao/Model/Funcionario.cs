@@ -23,10 +23,10 @@ namespace ReservaRefeicao.Model
         [StringLength(1)]
         public required string Turno { get; set; }
 
-        //[ForeignKey("CodSecao")]
         [Required]
         public required short CodSecao { get; set; }
-        //public required virtual Secao Secao { get; set; }
+        [ForeignKey("CodSecao")]
+        public virtual Secao Secao { get; set; }
 
         public decimal NumCracha { get; set; }
     }

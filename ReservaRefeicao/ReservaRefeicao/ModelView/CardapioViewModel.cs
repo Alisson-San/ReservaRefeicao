@@ -23,12 +23,35 @@ namespace ReservaRefeicao.ViewModels
         public ICommand DiaAnteriorCommand { get; }
         public ICommand DiaProximoCommand { get; }
         public ICommand ReservarCommand { get; }
+        public ICommand EntregarPavilhaoCommand { get; }
 
         public event Action<bool> AnimarTransicaoEvent;
 
 
         private bool _podeNavegarAnterior;
         private bool _podeNavegarProximo;
+        private bool _podeEncomendar;
+        private bool _modoSelecaoAtivo;
+
+        public bool ModoSelecaoAtivo
+        {
+            get => _modoSelecaoAtivo;
+            set
+            {
+                _modoSelecaoAtivo = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool PodeEncomendar
+        {
+            get => _podeEncomendar;
+            set
+            {
+                _podeEncomendar = value;
+                OnPropertyChanged();
+            }
+        }
 
         public bool PodeNavegarAnterior
         {
@@ -69,7 +92,7 @@ namespace ReservaRefeicao.ViewModels
                 OnPropertyChanged(); // Notifica a View de que a propriedade mudou
             }
         }
-
+         
         // ObservableCollection para o Binding no CollectionView
         public ObservableCollection<RefeicaoViewModel> CardapiosDoDia { get; } = new ObservableCollection<RefeicaoViewModel>();
         public ObservableCollection<RefeicaoViewModel> CardapiosSelecionados { get; } = new ObservableCollection<RefeicaoViewModel>();
@@ -80,12 +103,18 @@ namespace ReservaRefeicao.ViewModels
             _sessaoUsuario = sessaoUsuario;
             _gestorCardapioService = gestorCardapioService;
             _sessaoUsuario.SessaoEncerrada += OnSessaoEncerrada;
+            _podeEncomendar = _sessaoUsuario.Permission.CanOrder();
             DefineActualTiming();
             if(AtualizarRefeicoesFuncionario().IsCompleted)
                 CarregarCardapioAsync();
             AtualizarNavegacao();
             DiaAnteriorCommand = new Command(async () => await NavegarDiaAnterior());
             DiaProximoCommand = new Command(async () => await NavegarDiaProximo());
+        }
+
+        private void AtivarModoSelecao()
+        {
+            ModoSelecaoAtivo = true;
         }
 
 

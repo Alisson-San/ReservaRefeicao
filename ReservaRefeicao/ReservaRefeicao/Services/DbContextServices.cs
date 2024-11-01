@@ -24,7 +24,8 @@ namespace ReservaRefeicao.Services
             Database.GetDbConnection().Open();
             cookie = SetAppRole("RefeicaoAppRole", "Botcha123");
         }
-        public bool Checkconnection()
+
+        public bool CheckConnection()
         {
             try
             {
@@ -35,6 +36,23 @@ namespace ReservaRefeicao.Services
                 return false;
             }
         }
+
+        public async Task TestConnection()
+        {
+            try
+            {
+                // Tenta abrir uma conexão
+                await Database.OpenConnectionAsync();
+                await Database.CloseConnectionAsync();
+            }
+            catch (Exception ex)
+            {
+                // Lança uma exceção caso não consiga abrir a conexão
+                throw new InvalidOperationException("Erro ao conectar com o banco de dados", ex);
+            }
+
+        }
+
 
         byte[] SetAppRole(string approle, string password)
         {
@@ -78,7 +96,7 @@ namespace ReservaRefeicao.Services
             }
         }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        protected override async void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             string stringConexao = "SistemaTramontina";
 #if (DEBUG)
@@ -90,6 +108,7 @@ namespace ReservaRefeicao.Services
             optionsBuilder.UseSqlServer(connectionString);
 
             base.OnConfiguring(optionsBuilder);
+            
         }
 
         public DbSet<Funcionario> Funcionarios { get; set; }

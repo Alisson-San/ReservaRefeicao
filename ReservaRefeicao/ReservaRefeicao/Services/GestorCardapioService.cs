@@ -33,7 +33,7 @@ namespace ReservaRefeicao.Services
 
         public async Task<List<Refeicao>> ObterCardapioDoDia()
         {
-            _dbContext.Checkconnection();
+            _dbContext.CheckConnection();
             return await _dbContext.refeicaos
                 .Where(r => r.Data == DateTime.Today)
                 .ToListAsync();

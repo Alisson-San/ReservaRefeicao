@@ -8,6 +8,7 @@ using ReservaRefeicao.Views;
 using ReservaRefeicao.ViewModels;
 using Microsoft.Extensions.Configuration;
 using System.Reflection;
+using ReservaRefeicao.Tests;
 
 namespace ReservaRefeicao
 {
@@ -42,6 +43,8 @@ namespace ReservaRefeicao
                 var connectionString = config.GetConnectionString("SistemaTramontina");
                 options.UseSqlServer(connectionString);
             });
+
+            builder.Services.AddScoped<ConnectionTest>();
 
             //Registra os serviços
             builder.Services.AddTransient<GestorSessaoService>();

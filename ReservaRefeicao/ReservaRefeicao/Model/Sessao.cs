@@ -11,6 +11,7 @@ namespace ReservaRefeicao.Model
         private readonly object _timerLock = new object();
 
         public Funcionario FuncionarioAtual { get; private set; }
+        public Permission Permission { get; private set; }
         public List<Reserva> ReservasSemana { get; private set; }
         private Timer _timer;
         private const int TempoLimiteInatividade = 600000; // 60 segundos
@@ -36,6 +37,7 @@ namespace ReservaRefeicao.Model
             if (funcionario != null)
             {
                 FuncionarioAtual = funcionario;
+                Permission = new Permission(funcionario);
                 ReservasSemana = reservasSemana;
                 ResetarTimer();
                 _sessaoCarregada = false;
