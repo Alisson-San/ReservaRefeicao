@@ -20,7 +20,7 @@
                    TextColor="Black"
                    HorizontalOptions="Center" />
             <Frame BackgroundColor="#003366" CornerRadius="15" Padding="10" HasShadow="True" BorderColor="White" Margin="0,5,0,0">
-                <Label Text="CARDÁPIO DO DIA"
+                <Label Text="{Binding NomeFuncionario}"
                        FontSize="26"
                        FontAttributes="Bold"
                        TextColor="White"
@@ -45,7 +45,7 @@
                         HorizontalOptions="CenterAndExpand"
                         VerticalOptions="CenterAndExpand"
                         Margin="0,20,0,20"
-                        SelectionMode="Multiple"
+                        SelectionMode="Single"
                         SelectionChanged="OnSelectionChanged"
                         SelectedItem="{Binding CardapiosSelecionados}">
             <CollectionView.ItemsLayout>
@@ -92,8 +92,7 @@
         <!-- Botões Finalizar Sessão e Entregar Pavilhão estilizados -->
         <StackLayout Grid.Row="2" Orientation="Horizontal" Spacing="10" HorizontalOptions="Center" VerticalOptions="End" Padding="10,20,10,10">
             <Button Text="Finalizar Sessão"
-                    Command="{Binding FinalizarSessaoCommand}"
-                    IsVisible="{Binding PodeEncomendar}"
+                    Command="{Binding EncerrarSessaoCommand}"
                     BackgroundColor="#003366"
                     TextColor="White"
                     FontAttributes="Bold"

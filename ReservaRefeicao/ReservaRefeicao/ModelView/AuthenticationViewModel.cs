@@ -13,8 +13,8 @@ namespace ReservaRefeicao.ModelView
 {
     public class AuthenticationViewModel : ViewModelBase
     {
-        private int? _codigoFuncionario;
-        public int? CodigoFuncionario
+        private decimal? _codigoFuncionario;
+        public decimal? CodigoFuncionario
         {
             get => _codigoFuncionario;
             set => SetProperty(ref _codigoFuncionario, value);
@@ -73,12 +73,22 @@ namespace ReservaRefeicao.ModelView
             
             if (CodigoFuncionario != null)
             {
-                int Repreg = (int)CodigoFuncionario;
-                var funcionario = await _gestorDeSessao.ObterFuncionarioPorCodigo(Repreg);
+                decimal Codigo = (decimal)CodigoFuncionario;
+                Funcionario funcionario;
+                if (Codigo.ToString().Length <= 4)
+                {
+                    funcionario = await _gestorDeSessao.ObterFuncionarioPorCodigo((int)Codigo);
+                }
+                else
+                {
+                    funcionario = await _gestorDeSessao.ObterFuncionarioPorCartao(Codigo);
+
+                }
+                    
 
                 if (funcionario != null)
                 {
-                    var reservas = await _gestorCardapio.ObterReservasSemanalFuncionario(Repreg);
+                    var reservas = await _gestorCardapio.ObterReservasSemanalFuncionario(funcionario.Repreg);
                     _sessaoUsuario.IniciarSessao(funcionario,reservas);
                     if (Shell.Current != null)
                        await Shell.Current.GoToAsync($"{nameof(CardapioView)}?nomeFuncionario={Uri.EscapeDataString(funcionario.Nome)}");
@@ -87,6 +97,7 @@ namespace ReservaRefeicao.ModelView
                 else
                 {   
                     _codigoFuncionario = null;
+                    OnPropertyChanged();
                     await _alertService.DisplayAlertAsync("Autenticação", "Funcionario Não Encontrado", "OK");
                 }
             }

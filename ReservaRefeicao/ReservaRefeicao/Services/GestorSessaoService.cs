@@ -24,5 +24,13 @@ namespace ReservaRefeicao.Services
                 .Include(f => f.Secao.Predio)
                 .FirstOrDefaultAsync(f => f.Repreg == codigo);
         }
+
+        public async Task<Funcionario> ObterFuncionarioPorCartao(decimal codigo)
+        {
+            return await _dbContext.Funcionarios
+                .Include(f => f.Secao)
+                .Include(f => f.Secao.Predio)
+                .FirstOrDefaultAsync(f => f.NumCracha == codigo);
+        }
     }
 }

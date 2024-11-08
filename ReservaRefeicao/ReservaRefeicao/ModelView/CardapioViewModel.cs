@@ -24,6 +24,7 @@ namespace ReservaRefeicao.ViewModels
         public ICommand DiaProximoCommand { get; }
         public ICommand ReservarCommand { get; }
         public ICommand EntregarPavilhaoCommand { get; }
+        public ICommand EncerrarSessaoCommand { get; }
 
         public event Action<bool> AnimarTransicaoEvent;
 
@@ -86,7 +87,7 @@ namespace ReservaRefeicao.ViewModels
 
         public string DiaAtual
         {
-            get => _diaAtual.ToString("D");
+            get => _diaAtual.Date != DateTime.Today.Date? _diaAtual.ToString("D") : $"Hoje, {_diaAtual.ToString("M")}";
             private set
             {
                 OnPropertyChanged(); // Notifica a View de que a propriedade mudou
@@ -110,6 +111,7 @@ namespace ReservaRefeicao.ViewModels
             AtualizarNavegacao();
             DiaAnteriorCommand = new Command(async () => await NavegarDiaAnterior());
             DiaProximoCommand = new Command(async () => await NavegarDiaProximo());
+            EncerrarSessaoCommand = new Command(async () => await _sessaoUsuario.EncerrarSessao());
         }
 
         private void AtivarModoSelecao()
@@ -117,10 +119,9 @@ namespace ReservaRefeicao.ViewModels
             ModoSelecaoAtivo = true;
         }
 
-
         private void DefineActualTiming()
         {
-            _diaAtual = DateTime.Now.AddDays(-2);
+            _diaAtual = DateTime.Now;
             if (_sessaoUsuario.FuncionarioAtual.Turno == "N" && _diaAtual.Hour <= 8 && _diaAtual.Minute <= 30)
             {
                 _diaAtual = _diaAtual.AddDays(1);
@@ -180,7 +181,7 @@ namespace ReservaRefeicao.ViewModels
                 var refeicaoViewModel = new RefeicaoViewModel { Refeicao = refeicao };
                 refeicaoViewModel.CorExibicao = _sessaoUsuario.ReservasSemana.Any(r => r.Refeicao.CodRefeicao == refeicao.CodRefeicao)
                     ? refeicao.Nome.Contains("CAFÉ") ? Colors.Orange : Colors.LightGreen
-                    : Colors.Transparent;
+                    : Color.FromArgb("F0F0F0");
 
                 CardapiosDoDia.Add(refeicaoViewModel);
             }
