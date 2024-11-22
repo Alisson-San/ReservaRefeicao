@@ -3,6 +3,7 @@
              xmlns:vm="clr-namespace:ReservaRefeicao.ModelView"
              x:Class="ReservaRefeicao.Views.CardapioView"
              Title=""
+             Shell.NavBarIsVisible="False"
              BackgroundColor="White">
 
     <Grid Padding="20" ColumnSpacing="10" RowSpacing="20" VerticalOptions="CenterAndExpand">
