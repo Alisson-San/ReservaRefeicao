@@ -1,4 +1,3 @@
-using ReservaRefeicao.Model;
 using ReservaRefeicao.ModelView;
 using ReservaRefeicao.ViewModels;
 
@@ -13,7 +12,6 @@ namespace ReservaRefeicao.Views
             viewModel.AnimarTransicaoEvent += async (paraDireita) => await AnimarTransicao(paraDireita);
         }
 
-        // Manipulador do evento Appearing
         protected override async void OnAppearing()
         {
             base.OnAppearing();
@@ -21,35 +19,25 @@ namespace ReservaRefeicao.Views
             // Chama a função da ViewModel quando a página aparecer
             if (BindingContext is CardapioViewModel viewModel)
             {
-                viewModel.StartTimer(); 
+                viewModel.StartTimer();
             }
         }
 
-        private async Task AnimarTransicao(bool paraEsquerda)
+        private async Task AnimarTransicao(bool paraDireita)
         {
             // Define a direção do deslocamento
-            double startTranslation = paraEsquerda ? 1000 : -1000;
+            double startTranslation = paraDireita ? 1000 : -1000;
             double endTranslation = 0;
 
-            // Realiza o deslocamento inicial para fora da tela
-            CollectionView collectionView = CardapioCollectionView;
-            await collectionView.TranslateTo(startTranslation, 0, 0);
-            // Anima o deslocamento para o centro da tela
-            await collectionView.TranslateTo(endTranslation, 0, 300, Easing.CubicInOut);
-        }
+            // Realiza o deslocamento inicial fora da tela
+            CardapioCollectionView.TranslationX = startTranslation;
+            CardapioCollectionView.Opacity = 0;
 
-        private void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (BindingContext is CardapioViewModel viewModel)
-            {
-                viewModel.CardapiosSelecionados.Clear();
-                foreach (var item in e.CurrentSelection)
-                {
-                    viewModel.CardapiosSelecionados.Add(item as RefeicaoViewModel);
-                }
-
-                viewModel.Reservar();
-            }
+            // Anima o deslocamento para o centro da tela com suavidade
+            await Task.WhenAll(
+                CardapioCollectionView.TranslateTo(endTranslation, 0, 400, Easing.CubicOut),
+                CardapioCollectionView.FadeTo(1, 400, Easing.CubicIn)
+            );
         }
 
     }
