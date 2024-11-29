@@ -87,13 +87,30 @@ namespace ReservaRefeicao.ViewModels
 
         public string DiaAtual
         {
-            get => _diaAtual.Date != DateTime.Today.Date? _diaAtual.ToString("D") : $"Hoje, {_diaAtual.ToString("M")}";
-            private set
+            get
             {
-                OnPropertyChanged(); // Notifica a View de que a propriedade mudou
+                if (_diaAtual.Date == DateTime.Today.Date)
+                {
+                    return $"HOJE {_diaAtual:dd/MM}"; 
+                }
+                else if (_diaAtual.Date == DateTime.Today.AddDays(1).Date)
+                {
+                    return $"AMANHÃ {_diaAtual:dd/MM}"; 
+                }
+                else if (_diaAtual.Date == DateTime.Today.AddDays(-1).Date)
+                {
+                    return $"ONTEM {_diaAtual:dd/MM}"; 
+                }
+                else
+                {
+           
+                    return _diaAtual.ToString("dddd, dd 'de' MMMM 'de' yyyy");
+                }
             }
         }
-         
+
+
+
         // ObservableCollection para o Binding no CollectionView
         public ObservableCollection<RefeicaoViewModel> CardapiosDoDia { get; } = new ObservableCollection<RefeicaoViewModel>();
         public ObservableCollection<RefeicaoViewModel> CardapiosSelecionados { get; } = new ObservableCollection<RefeicaoViewModel>();
@@ -207,22 +224,23 @@ namespace ReservaRefeicao.ViewModels
 
         private async Task NavegarDiaAnterior()
         {
+            AnimarTransicaoEvent?.Invoke(false); // Falso = deslizar para a direita
             _diaAtual = _diaAtual.AddDays(-1);
             OnPropertyChanged(nameof(DiaAtual));
             await AtualizarCardapios();
             await AtualizarNavegacao();
-            AnimarTransicaoEvent?.Invoke(false);
-
         }
 
         private async Task NavegarDiaProximo()
         {
+            AnimarTransicaoEvent?.Invoke(true); // Verdadeiro = deslizar para a esquerda
             _diaAtual = _diaAtual.AddDays(1);
             OnPropertyChanged(nameof(DiaAtual));
             await AtualizarCardapios();
             await AtualizarNavegacao();
-            AnimarTransicaoEvent?.Invoke(true);
         }
+
+
 
         public void Reservar()
         {
@@ -307,12 +325,12 @@ namespace ReservaRefeicao.ViewModels
 
         private Task AtualizarNavegacao()
         {
-            // Verifica se pode navegar para o dia anterior
-            PodeNavegarAnterior = _diaAtual.AddDays(-1).Date.AddHours(8).AddMinutes(59) > DateTime.Today.AddHours(9);
+            // Permitir navegação para o dia anterior se houver cardápio nesse dia
+            PodeNavegarAnterior = _cardapioDaSemana.Any(r => r.Data.Date == _diaAtual.AddDays(-1).Date);
 
-            // Verifica se há cardápios para o dia seguinte
-            var proximoDia = _diaAtual.AddDays(1);
-            PodeNavegarProximo = _cardapioDaSemana.Any(r => r.Data.Date == proximoDia.Date);
+            // Permitir navegação para o próximo dia se houver cardápio nesse dia
+            PodeNavegarProximo = _cardapioDaSemana.Any(r => r.Data.Date == _diaAtual.AddDays(1).Date);
+
             return Task.CompletedTask;
         }
 
