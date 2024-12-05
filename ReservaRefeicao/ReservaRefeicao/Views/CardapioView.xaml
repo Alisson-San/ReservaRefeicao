@@ -1,75 +1,72 @@
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui" 
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:vm="clr-namespace:ReservaRefeicao.ModelView"
+             xmlns:vm="clr-namespace:ReservaRefeicao.ViewModels"
              x:Class="ReservaRefeicao.Views.CardapioView"
              Title=""
              Shell.NavBarIsVisible="False"
              BackgroundColor="White">
 
-    <Grid Padding="20" ColumnSpacing="10" RowSpacing="20" VerticalOptions="CenterAndExpand">
-        <!-- Definir linhas e colunas para organizar os elementos -->
+    <Grid Padding="20" ColumnSpacing="10" RowSpacing="20">
+        <!-- Configuração das linhas e colunas -->
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
+            <!-- Cabeçalho -->
             <RowDefinition Height="*" />
+            <!-- Conteúdo principal -->
             <RowDefinition Height="Auto" />
+            <!-- Botões -->
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="80" />
+            <ColumnDefinition Width="120" />
+            <!-- Coluna lateral esquerda -->
             <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="80" />
+            <!-- Coluna central -->
+            <ColumnDefinition Width="120" />
+            <!-- Coluna lateral direita -->
         </Grid.ColumnDefinitions>
 
-        <!-- Cabeçalho com data dinâmica -->
-        <StackLayout Grid.Row="0" Grid.ColumnSpan="3" Padding="0" VerticalOptions="Center" HorizontalOptions="Center" Margin="0,15,0,0">
-            <Label Text="Bem-vindo(a),"
-                   FontSize="16"
-                   TextColor="Black"
-                   HorizontalOptions="Center" />
-            <Frame BackgroundColor="#003366" CornerRadius="15" Padding="10" HasShadow="True" BorderColor="White" Margin="0,5,0,0">
-                <Label Text="{Binding NomeFuncionario}"
-                       FontSize="26"
-                       FontAttributes="Bold"
-                       TextColor="White"
-                       HorizontalOptions="Center" />
-            </Frame>
-            
-            <!-- Exibição do dia atual estilizado -->
-            <Frame BackgroundColor="White"
-                   BorderColor="#004C99"
-                   CornerRadius="10"
-                   Padding="10"
-                   HorizontalOptions="Center"
-                   VerticalOptions="Start"
-                   HasShadow="True"
-                   Margin="0,5,0,0">
-                <Label Text="{Binding DiaAtual}"
-                       FontSize="20"
-                       FontAttributes="Bold"
-                       TextColor="#004C99"
-                       HorizontalOptions="Center"
-                       VerticalOptions="Center" />
-            </Frame>
-
-            <Label Text="Escolha o Cardápio"
-                   FontSize="Small"
-                   HorizontalOptions="Center"
-                   VerticalOptions="CenterAndExpand"
-                   Margin="0,5,0,0"/>
-        </StackLayout>
-
-        <!-- Logo da empresa no canto superior direito -->
-        <Image Source="tramontinalogo.png"
-                HeightRequest="100"
-                WidthRequest="100"
-                Aspect="AspectFit"
-                HorizontalOptions="End"
+        <!-- Cabeçalho -->
+        <Grid Grid.Row="0" Grid.ColumnSpan="3">
+            <StackLayout VerticalOptions="Start" HorizontalOptions="Start" Padding="0" Margin="0,0,10,0">
+                <Label Text="Bem-vindo(a),"
+                FontSize="25"
+                TextColor="Black"
+                HorizontalOptions="Start"
                 VerticalOptions="Start"
-                Grid.Row="0" Grid.Column="2"
-                Margin="0,-20,-10,0" />
+                Margin="10,0,0,5" />
 
+                <!-- Nome do funcionário com fundo azul arredondado -->
+                <Frame BackgroundColor="#003366" CornerRadius="15" Padding="10" HasShadow="True" Margin="0,5,0,0">
+               <Label Text="{Binding NomeFuncionario}"
+               FontSize="23"
+               FontAttributes="Bold"
+               TextColor="White"
+               HorizontalOptions="Center"
+               VerticalOptions="Center" />
+                </Frame>
+            </StackLayout>
 
-        <!-- Botão Voltar à esquerda -->
+            <!-- Data -->
+            <StackLayout HorizontalOptions="Center" VerticalOptions="Center" Grid.ColumnSpan="3">
+                <Frame BackgroundColor="White"
+                       BorderColor="#004C99"
+                       CornerRadius="10"
+                       Padding="10"
+                       Margin="0,15,0,0"
+                       HasShadow="True">
+                    <Label Text="{Binding DiaAtual}"
+                           FontSize="20"
+                           FontAttributes="Bold"
+                           TextColor="#004C99"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center"
+                           LineBreakMode="NoWrap" />
+                </Frame>
+            </StackLayout>
+        </Grid>
+
+        <!-- Botão Voltar -->
         <Button Text="←"
                 Command="{Binding DiaAnteriorCommand}"
                 IsEnabled="{Binding PodeNavegarAnterior}"
@@ -78,22 +75,20 @@
                 FontSize="Large"
                 WidthRequest="60"
                 HeightRequest="500"
+                Margin="0,130,0,0"
                 CornerRadius="20"
                 Grid.Row="1" Grid.Column="0"
                 HorizontalOptions="Center"
                 VerticalOptions="FillAndExpand" />
 
-        <!-- Exibição dos blocos de cardápio em uma linha com espaçamento -->
-        <CollectionView Grid.Row="1"
-                Grid.Column="1"
-                x:Name="CardapioCollectionView"
-                ItemsSource="{Binding CardapiosDoDia}"
-                HorizontalOptions="CenterAndExpand"
-                VerticalOptions="CenterAndExpand"
-                Opacity="1"
-                TranslationX="0"
-                Margin="0,2,0,20"
-                SelectionMode="Single">
+        <!-- Conteúdo principal -->
+        <CollectionView Grid.Row="1" Grid.Column="1"
+                        x:Name="CardapioCollectionView"
+                        ItemsSource="{Binding CardapiosDoDia}"
+                        HorizontalOptions="CenterAndExpand"
+                        VerticalOptions="CenterAndExpand"
+                        Margin="20,90,0,20"
+                        SelectionMode="Single">
             <CollectionView.ItemsLayout>
                 <LinearItemsLayout Orientation="Horizontal" ItemSpacing="20" />
             </CollectionView.ItemsLayout>
@@ -115,13 +110,13 @@
                                    FontAttributes="Bold"
                                    TextColor="#004C99"
                                    HorizontalOptions="Center"
-                                   HorizontalTextAlignment="Center"/>
+                                   HorizontalTextAlignment="Center" />
                             <Label Text="{Binding Refeicao.Tipo}"
                                    FontSize="16"
                                    TextColor="#555555"
                                    HorizontalOptions="Center"
                                    Margin="0,5,0,0"
-                                   HorizontalTextAlignment="Center"/>
+                                   HorizontalTextAlignment="Center" />
                             <Label Text="{Binding CardapioFormatado}"
                                    FontSize="14"
                                    TextColor="Black"
@@ -135,7 +130,7 @@
             </CollectionView.ItemTemplate>
         </CollectionView>
 
-        <!-- Botão Avançar à direita -->
+        <!-- Botão Avançar -->
         <Button Text="→"
                 Command="{Binding DiaProximoCommand}"
                 IsEnabled="{Binding PodeNavegarProximo}"
@@ -144,12 +139,13 @@
                 FontSize="Large"
                 WidthRequest="60"
                 HeightRequest="500"
+                Margin="0,130,0,0"
                 CornerRadius="20"
                 Grid.Row="1" Grid.Column="2"
                 HorizontalOptions="Center"
                 VerticalOptions="FillAndExpand" />
 
-        <!-- Botões Finalizar Sessão e Entregar Pavilhão estilizados -->
+        <!-- Botões de Finalizar Sessão e Entregar -->
         <StackLayout Grid.Row="2" Grid.ColumnSpan="3" Orientation="Horizontal" Spacing="10" HorizontalOptions="Center" VerticalOptions="End" Padding="10,20,10,10">
             <Button Text="Finalizar Sessão"
                     Command="{Binding EncerrarSessaoCommand}"
@@ -157,8 +153,10 @@
                     TextColor="White"
                     FontAttributes="Bold"
                     CornerRadius="10"
-                    HorizontalOptions="FillAndExpand"
-                    WidthRequest="150" />
+                    HorizontalOptions="CenterAndExpand"
+                    WidthRequest="150"
+                    HeightRequest="50" />
+
             <Button Text="Entregar Pavilhão"
                     Command="{Binding EntregarPavilhaoCommand}"
                     IsVisible="{Binding PodeEncomendar}"
@@ -166,8 +164,9 @@
                     TextColor="White"
                     FontAttributes="Bold"
                     CornerRadius="10"
-                    HorizontalOptions="FillAndExpand"
-                    WidthRequest="150" />
+                    HorizontalOptions="CenterAndExpand"
+                    WidthRequest="150"
+                    HeightRequest="50" />
         </StackLayout>
     </Grid>
 </ContentPage>
