@@ -224,20 +224,26 @@ namespace ReservaRefeicao.ViewModels
 
         private async Task NavegarDiaAnterior()
         {
-            AnimarTransicaoEvent?.Invoke(false); // Falso = deslizar para a direita
-            _diaAtual = _diaAtual.AddDays(-1);
-            OnPropertyChanged(nameof(DiaAtual));
-            await AtualizarCardapios();
-            await AtualizarNavegacao();
+            if (_podeNavegarAnterior)
+            {
+                AnimarTransicaoEvent?.Invoke(false); // Falso = deslizar para a direita
+                _diaAtual = _diaAtual.AddDays(-1);
+                OnPropertyChanged(nameof(DiaAtual));
+                await AtualizarCardapios();
+                await AtualizarNavegacao();
+            }
         }
 
         private async Task NavegarDiaProximo()
         {
-            AnimarTransicaoEvent?.Invoke(true); // Verdadeiro = deslizar para a esquerda
-            _diaAtual = _diaAtual.AddDays(1);
-            OnPropertyChanged(nameof(DiaAtual));
-            await AtualizarCardapios();
-            await AtualizarNavegacao();
+            if (_podeNavegarProximo)
+            {
+                AnimarTransicaoEvent?.Invoke(true); // Verdadeiro = deslizar para a esquerda
+                _diaAtual = _diaAtual.AddDays(1);
+                OnPropertyChanged(nameof(DiaAtual));
+                await AtualizarCardapios();
+                await AtualizarNavegacao();
+            }
         }
 
 

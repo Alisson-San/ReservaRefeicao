@@ -40,5 +40,19 @@ namespace ReservaRefeicao.Views
             );
         }
 
+        private void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (BindingContext is CardapioViewModel viewModel)
+            {
+                viewModel.CardapiosSelecionados.Clear();
+                foreach (var item in e.CurrentSelection)
+                {
+                    viewModel.CardapiosSelecionados.Add(item as RefeicaoViewModel);
+                }
+
+                viewModel.Reservar();
+            }
+        }
+
     }
 }
