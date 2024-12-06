@@ -27,7 +27,7 @@ namespace ReservaRefeicao.Services
             DateTime EndWeek = _dateHelper.GetLastDayOfWeek(DateTime.Now);
 
             return _dbContext.refeicaos
-                .Where(r => r.Data >= InitWeek && r.Data <= EndWeek)
+                .Where(r => r.Data >= InitWeek)
                 .ToList();
         }
 

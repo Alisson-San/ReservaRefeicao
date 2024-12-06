@@ -104,7 +104,7 @@ namespace ReservaRefeicao.ViewModels
                 else
                 {
            
-                    return _diaAtual.ToString("dddd, dd 'de' MMMM 'de' yyyy");
+                    return _diaAtual.ToString("dddd, dd 'de' MMMM");
                 }
             }
         }
@@ -290,9 +290,27 @@ namespace ReservaRefeicao.ViewModels
                     {
                         if (reserva.CodRefeicao != refeicaoSelecionada.CodRefeicao && !refeicaoSelecionada.Tipo.Contains("CAFÉ"))
                         {
-                            reserva.CodRefeicao = refeicaoSelecionada.CodRefeicao;
-                            await _gestorCardapioService.AtualizarReserva(reserva);
-                            break;
+                            if (reserva.Refeicao.Tipo.Contains("CAFÉ") && reservaExistente.Count == 1)
+                            {
+                                var novaReserva = new Reserva
+                                {
+                                    Repreg = _sessaoUsuario.FuncionarioAtual.Repreg,
+                                    CodRefeicao = refeicaoSelecionada.CodRefeicao,
+                                    DataReserva = DateTime.Now
+                                };
+                                await _gestorCardapioService.AdicionarReserva(novaReserva);
+                                break;
+                            }
+                            else if(reserva.Refeicao.Tipo.Contains("CAFÉ") && reservaExistente.Count > 1)
+                            {
+                                continue;
+                            }
+                            else
+                            {
+                                reserva.CodRefeicao = refeicaoSelecionada.CodRefeicao;
+                                await _gestorCardapioService.AtualizarReserva(reserva);
+                                break;
+                            }
                         }
                         else
                         {
@@ -332,7 +350,7 @@ namespace ReservaRefeicao.ViewModels
         private Task AtualizarNavegacao()
         {
             // Permitir navegação para o dia anterior se houver cardápio nesse dia
-            PodeNavegarAnterior = _cardapioDaSemana.Any(r => r.Data.Date == _diaAtual.AddDays(-1).Date);
+            PodeNavegarAnterior = _diaAtual.AddDays(-1) > DateTime.Now; 
 
             // Permitir navegação para o próximo dia se houver cardápio nesse dia
             PodeNavegarProximo = _cardapioDaSemana.Any(r => r.Data.Date == _diaAtual.AddDays(1).Date);

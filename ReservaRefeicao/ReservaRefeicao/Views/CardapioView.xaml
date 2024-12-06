@@ -32,11 +32,12 @@
                  FontSize="16"
                  TextColor="Black"
                  HorizontalOptions="Center" />
-            <Frame BackgroundColor="#003366" Padding="10" CornerRadius="15" HasShadow="True" BorderColor="White" Margin="0,0,0,0">
+            <Frame HorizontalOptions="Center" BackgroundColor="#003366" Padding="10" CornerRadius="15" HasShadow="True" BorderColor="White" Margin="0,0,0,0">
                 <Label Text="{Binding NomeFuncionario}"
                     FontSize="20"
                     FontAttributes="Bold"
                     TextColor="White"
+                    HorizontalTextAlignment="Center"
                     HorizontalOptions="Center" />
             </Frame>
 
@@ -102,7 +103,7 @@
                     VerticalOptions="CenterAndExpand"
                     Opacity="1"
                     TranslationX="0"
-                    Margin="-40,0,0,0"
+                    Margin="0,0,0,0"
                     VerticalScrollBarVisibility="Never"
                     ZIndex="10">
                 <CollectionView.ItemsLayout>
@@ -113,7 +114,7 @@
                         <Frame BorderColor="#004C99"
                                BackgroundColor="{Binding CorExibicao}"
                                CornerRadius="20"
-                               HeightRequest="320"
+                               HeightRequest="350"
                                ZIndex="11"
                                WidthRequest="250"
                                HasShadow="False"
