@@ -62,11 +62,17 @@
 
 	<ItemGroup>
 	  <AndroidResource Remove="Logs\**" />
+	  <AndroidResource Remove="Views\Templates\**" />
 	  <Compile Remove="Logs\**" />
+	  <Compile Remove="Views\Templates\**" />
 	  <EmbeddedResource Remove="Logs\**" />
+	  <EmbeddedResource Remove="Views\Templates\**" />
 	  <MauiCss Remove="Logs\**" />
+	  <MauiCss Remove="Views\Templates\**" />
 	  <MauiXaml Remove="Logs\**" />
+	  <MauiXaml Remove="Views\Templates\**" />
 	  <None Remove="Logs\**" />
+	  <None Remove="Views\Templates\**" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -106,9 +112,6 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\CardapioView.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Views\Templates\RefeicaoTemplate.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	</ItemGroup>
